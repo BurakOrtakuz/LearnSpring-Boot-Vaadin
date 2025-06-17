@@ -14,8 +14,7 @@ public class Admin {
     @OneToOne
     @MapsId
     @JoinColumn(name = "admin_id")
-    private Kisi kisi;
+    private Person person;
 
-    private String rutbe;
+    private String rank;
 }
-
