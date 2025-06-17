@@ -1,4 +1,7 @@
 package com.example.application.taskmanagement.repository;
 
-public interface IDoctorRepository {
+import com.example.application.taskmanagement.domain.Doctor;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
 }
