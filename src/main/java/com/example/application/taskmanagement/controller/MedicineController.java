@@ -3,12 +3,14 @@ package com.example.application.taskmanagement.controller;
 import com.example.application.taskmanagement.domain.Medicine;
 import com.example.application.taskmanagement.service.IMedicineService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/medicines")
+@PreAuthorize("hasAnyRole('ADMIN','DOCTOR')")
 public class MedicineController {
     private final IMedicineService medicineService;
 
@@ -63,4 +65,3 @@ public class MedicineController {
         return ResponseEntity.noContent().build();
     }
 }
-

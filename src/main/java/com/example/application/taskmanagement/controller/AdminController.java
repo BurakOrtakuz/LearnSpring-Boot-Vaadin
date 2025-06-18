@@ -3,12 +3,14 @@ package com.example.application.taskmanagement.controller;
 import com.example.application.taskmanagement.domain.Admin;
 import com.example.application.taskmanagement.service.IAdminService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/admins")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     private final IAdminService adminService;
 
@@ -62,4 +64,3 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 }
-

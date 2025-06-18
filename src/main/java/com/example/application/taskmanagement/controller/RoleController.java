@@ -3,12 +3,14 @@ package com.example.application.taskmanagement.controller;
 import com.example.application.taskmanagement.domain.Role;
 import com.example.application.taskmanagement.service.IRoleService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/roles")
+@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
     private final IRoleService roleService;
 
@@ -30,6 +32,7 @@ public class RoleController {
 
     @PostMapping
     public Role create(@RequestBody Role role) {
+        System.out.println("Creating role: " + role);
         return roleService.save(role);
     }
 
@@ -61,4 +64,3 @@ public class RoleController {
         return ResponseEntity.noContent().build();
     }
 }
-
