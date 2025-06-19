@@ -40,7 +40,7 @@ public class PersonController {
         if (!personService.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        person.setPersonId(id);
+        person.setId(id);
         return ResponseEntity.ok(personService.save(person));
     }
 

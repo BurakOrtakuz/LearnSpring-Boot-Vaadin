@@ -42,7 +42,7 @@ class PersonControllerTest {
     @Test
     void create_shouldReturnOk() throws Exception {
         Person person = new Person();
-        person.setPersonId(1L);
+        person.setId(1L);
         Mockito.when(personService.save(any(Person.class))).thenReturn(person);
         mockMvc.perform(post("/api/persons")
                 .contentType(MediaType.APPLICATION_JSON)
