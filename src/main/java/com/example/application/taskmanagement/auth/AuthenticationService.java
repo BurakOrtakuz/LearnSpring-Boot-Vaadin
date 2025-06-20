@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final JwtService JwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         System.out.println("Registering user: " + request.getRoleName());
         var role = roleRepository.findByName(request.getRoleName())
                 .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRoleName()));
@@ -38,7 +38,7 @@ public class AuthenticationService {
                 .build();
         personRepository.save(user);
         var jwtToken = JwtService.generateToken(user);
-        return AuthenticationResponse.builder().
+        return RegisterResponse.builder().
                 token(jwtToken)
                 .build();
     }
@@ -55,6 +55,7 @@ public class AuthenticationService {
         var jwtToken = JwtService.generateToken(user);
         return AuthenticationResponse.builder().
                 token(jwtToken)
+                .role(user.getRole().getName())
                 .build();
     }
 }
