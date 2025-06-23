@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/api/v1/roles")
 @PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
     private final IRoleService roleService;
@@ -20,6 +20,7 @@ public class RoleController {
 
     @GetMapping
     public List<Role> getAll() {
+        System.out.println("Fetching all roles"+ roleService.findAll());
         return roleService.findAll();
     }
 

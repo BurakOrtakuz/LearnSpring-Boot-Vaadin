@@ -1,6 +1,7 @@
 package com.example.application.taskmanagement.config;
 
 import com.example.application.taskmanagement.ui.view.LoginView;
+import com.example.application.taskmanagement.ui.view.RegisterView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true)
@@ -30,7 +32,9 @@ public class SecurityConfiguration extends VaadinWebSecurity {
         // This only applies to Vaadin views
 
         System.out.println("Configuring Vaadin security filter chain");
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         super.configure(http);
+
         setLoginView(http, LoginView.class);
     }
 

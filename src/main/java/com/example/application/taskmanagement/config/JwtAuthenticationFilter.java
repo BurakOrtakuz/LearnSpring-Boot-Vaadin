@@ -27,7 +27,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException
     {
-        final String authHeader = request.getHeader("Authorization");
+        System.out.println("Processing JWT authentication filter");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null) {
+            // Cookie'den JWT'yi al
+            if (request.getCookies() != null) {
+                System.out.println("No Authorization header found, checking cookies");
+                for (var cookie : request.getCookies()) {
+                    System.out.println("Checking cookie: " + cookie.getName());
+                    if ("jwtToken".equals(cookie.getName())) {
+                        authHeader = "Bearer " + cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        System.out.println("Authorization header: " + authHeader);
         final String jwt;
         final String userEmail;
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -36,12 +51,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
+        System.out.println("Extracted JWT: " + jwt);
+        System.out.println("Extracted user email: " + userEmail);
         if(
                 userEmail != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null)
+                        SecurityContextHolder.getContext().getAuthentication() == null)
         {
-            UserDetails userDetails =this.userDetailsService
+            UserDetails userDetails = this.userDetailsService
                     .loadUserByUsername(userEmail);
+            System.out.println("User details loaded: " + userDetails);
             if(jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
