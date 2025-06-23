@@ -1,20 +1,20 @@
 package com.example.application.taskmanagement.auth;
 
-import com.example.application.taskmanagement.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-    private String firstName;
-    private String lastName;
+public class AdminRegisterResponse {
+    private Long id;
     private String username;
     private String email;
-    private String password;
+    private String firstName;
+    private String lastName;
+    private String roleName;
+    private String message;
 }

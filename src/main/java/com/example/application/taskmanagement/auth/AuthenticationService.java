@@ -2,10 +2,12 @@ package com.example.application.taskmanagement.auth;
 
 import com.example.application.taskmanagement.config.JwtService;
 import com.example.application.taskmanagement.domain.Person;
+import com.example.application.taskmanagement.domain.Role;
 import com.example.application.taskmanagement.repository.IPersonRepository;
 
 import com.example.application.taskmanagement.repository.IRoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +23,15 @@ public class AuthenticationService {
     private final JwtService JwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${application.default.role.name}")
+    private String defaultRoleName;
+
     public RegisterResponse register(RegisterRequest request) {
-        System.out.println("Registering user: " + request.getRoleName());
-        var role = roleRepository.findByName(request.getRoleName())
-                .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRoleName()));
-        System.out.println("Found role: " + role);
+        Role role = roleRepository.findByName(defaultRoleName)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + defaultRoleName));
 
 
-        var user = Person.builder()
+        Person user = Person.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .username(request.getUsername())
@@ -43,6 +46,31 @@ public class AuthenticationService {
                 .build();
     }
 
+    public AdminRegisterResponse adminRegister(AdminRegisterRequest request)
+    {
+        Role role = roleRepository.findByName(request.getRoleName())
+                .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRoleName()));
+
+        Person user = Person.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(role)
+                .build();
+        personRepository.save(user);
+        return AdminRegisterResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .roleName(user.getRole().getName())
+                .message("User registered successfully")
+                .build();
+
+    }
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -50,12 +78,13 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = personRepository.findByUsername(request.getUsername())
+        Person user = personRepository.findByUsername(request.getUsername())
                 .orElseThrow();
-        var jwtToken = JwtService.generateToken(user);
+        String jwtToken = JwtService.generateToken(user);
         return AuthenticationResponse.builder().
                 token(jwtToken)
                 .role(user.getRole().getName())
                 .build();
     }
+
 }

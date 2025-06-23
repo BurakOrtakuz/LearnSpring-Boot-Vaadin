@@ -19,7 +19,8 @@ import java.util.List;
 public class Person implements UserDetails
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "person_seq")
+    @SequenceGenerator(name= "person_seq", sequenceName = "person_seq", allocationSize = 1)
     private Long id;
     @Column(nullable = false)
     private String firstName;

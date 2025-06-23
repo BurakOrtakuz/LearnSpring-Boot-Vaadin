@@ -1,5 +1,5 @@
 1- Register kısmında role bilgisini çıkar ve sadece adminlerin rol ile eklemesine izin ver.
 2- Register sayfasını tamamla
-3- Hasta paneli(Kendi ilaçlarını görebilecek, randevu alabilecek)
-4- Admin paneli(Kullanıcıları görebilecek, kullanıcı ekleyebilecek, kullanıcıları silebilecek)
-5- Doktor paneli(Kendi hastalarını görebilecek, hastalarına ilaç yazabilecek ve kendisine randevu alan hastalarını görebilecek)
+3- Admin paneli(Kullanıcıları görebilecek, kullanıcı ekleyebilecek, kullanıcıları silebilecek)
+4- Doktor paneli(Kendi hastalarını görebilecek, hastalarına ilaç yazabilecek ve kendisine randevu alan hastalarını görebilecek)
+5- Hasta paneli(Kendi ilaçlarını görebilecek, randevu alabilecek)
