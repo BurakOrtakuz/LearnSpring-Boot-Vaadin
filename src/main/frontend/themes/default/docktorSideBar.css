@@ -1,35 +1,43 @@
+/* AppLayout için özel sidebar görünümü */
+.doctor-drawer {
+  background: #4635B1;
+  padding: 24px 0;
+  min-width: 220px;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
 .doctor-logo {
-    font-size: 32px;
-    padding: 8px 16px;
-    color: #AEEA94;
-    text-align: center;
+  color: #fff;
+  font-size: 1.8em;
+  text-align: center;
+  margin-bottom: 32px;
+  margin-top: 0;
 }
 
 .doctor-logo-link {
-    text-decoration: none;
-    margin-bottom: 128px;
-    display: block;
+  display: block;
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.doctor-logo-link:hover {
+  text-decoration: none !important;
 }
 
 .doctor-link {
-    width: 100%;
-    display: block;
-    margin: 0;
-    font-size: 16px;
-    color: #FFFBCA;
-    padding: 12px 0;
-    border: 2px dashed #B771E5;
-    background: transparent;
-    border-radius: 0;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.2s, border 0.2s, color 0.2s;
-    box-sizing: border-box;
+  color: #fff !important;
+  font-size: 1.1em;
+  text-decoration: none !important;
+  margin: 12px 0;
+  padding: 8px 0;
+  border-radius: 8px;
+  width: 80%;
+  text-align: center;
+  transition: background 0.2s;
 }
 
 .doctor-link:hover {
-    background: #7a3fc7;
-    border: 2px solid #7a3fc7;
-    color: #AEEA94;
-    text-decoration: none;
+  background: #5e4bb7;
+  color: #fff !important;
 }

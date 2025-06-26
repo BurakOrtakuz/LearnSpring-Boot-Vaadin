@@ -31,9 +31,7 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public Doctor save(Doctor doctor) {
-        Person person = doctor.getPerson();
-        personRepository.save(person);
-        System.out.println("Saving doctor with person: " + person);
+        System.out.println("Saving doctor with person: " + doctor.getPerson());
         return doctorRepository.save(doctor);
     }
 
