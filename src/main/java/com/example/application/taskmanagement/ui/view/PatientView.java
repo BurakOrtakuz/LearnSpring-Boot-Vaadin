@@ -1,11 +1,10 @@
 package com.example.application.taskmanagement.ui.view;
 
-import com.example.application.base.ui.view.MainLayout;
+import com.example.application.base.ui.component.MainLayout;
 import com.example.application.taskmanagement.domain.Person;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
 

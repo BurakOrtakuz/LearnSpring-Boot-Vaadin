@@ -1,0 +1,61 @@
+.footer {
+    width: 100%;
+    background: linear-gradient(90deg, #B771E5 0%, #4635B1 50%, #B771E5 100%);
+    color: #FFFBCA;
+    text-align: center;
+    padding: 20px 0 10px 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    font-size: 16px;
+    box-shadow: 0 -4px 16px rgba(70,53,177,0.15);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+}
+
+.footer-message {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.footer-mail {
+    color: #AEEA94;
+    text-decoration: underline;
+    margin: 0 4px;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-top: 6px;
+}
+
+.footer-logo {
+    font-size: 26px;
+    margin-right: 18px;
+    filter: drop-shadow(0 2px 4px #4635B1);
+}
+
+.footer-link {
+    color: #FFFBCA;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s, text-shadow 0.2s;
+    text-shadow: 0 1px 2px #4635B1;
+}
+
+.footer-link:hover {
+    color: #AEEA94;
+    text-decoration: underline;
+    text-shadow: 0 2px 8px #B771E5;
+}
+
+.footer-logo-img {
+    vertical-align: middle;
+    margin-right: 6px;
+}

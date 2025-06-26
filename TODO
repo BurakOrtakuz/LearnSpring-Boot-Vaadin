@@ -12,3 +12,16 @@ Admin sayfasında roller gözüküyor.
 Admin sayfasında kullanıcı ekleme işlemi yapılacak.
 Doktor sayfasına hiç girişilmedi.
 Düzgün bir tasarım yapılmadı
+
+Muane kayıtları tablosu olsun.
+Randevu alma tablosu olsun.
+Muanede yapılacak işlemler olsun. İlaç-reçete vs.
+Muaneleri listeleyen bir tablo olsun.
+Muane ekranının sol tarafında bir filtre olsu. Tarih, doktor, hasta, ilaç gibi filtreler olsun.
+Listelenen muannelerin raporları alınabilir olsun.
+Rapor içerisinde hastanın bilgileri, nedenleri sonuç ilaç vs
+Jasper repos ile rapor alınabilir. PDF-HTML-Excel gibi formatlarda rapor alınabilir.
+Gridde tıklanılan kaydın ekranı gelmeli.
+En üstte bilgiler altta muaneler altında da reçeteler olmalı.
+
+Reçeteye de dökümantasyon eklensin. PDF sürükle bırak ile eklenebilir   .

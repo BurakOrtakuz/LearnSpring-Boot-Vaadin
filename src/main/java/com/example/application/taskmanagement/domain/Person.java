@@ -27,7 +27,8 @@ public class Person implements UserDetails
     @Column(nullable = false)
     private String lastName;
 
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
     private String password;

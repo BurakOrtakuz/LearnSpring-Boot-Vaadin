@@ -1,42 +1,50 @@
 package com.example.application.taskmanagement.ui.view;
 
+import com.example.application.base.ui.component.FooterBar;
+import com.example.application.base.ui.component.MainNavbar;
 import com.example.application.taskmanagement.auth.AuthenticationRequest;
 import com.example.application.taskmanagement.auth.AuthenticationResponse;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.login.AbstractLogin.LoginEvent;
 import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.Cookie;
 import org.springframework.web.client.RestTemplate;
 
-@Route(value = "/login/login", autoLayout = false)
-@PermitAll
+@Route(value = "/login/login", layout = MainNavbar.class)
 @AnonymousAllowed
 public class LoginView extends VerticalLayout {
+    private final LoginForm loginForm;
     public LoginView() {
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        LoginForm loginForm = new LoginForm();
+        loginForm = new LoginForm();
         loginForm.addLoginListener(this::onLogin);
-        Div info = new Div();
-        info.setText("Lütfen giriş yapınız.");
-        info.getStyle().set("margin-bottom", "1em");
+        LoginI18n loginI18n = LoginI18n.createDefault();
+        loginI18n.getForm().setUsername("Kullanıcı adı");
+        loginI18n.getForm().setPassword("Şifre");
+        loginI18n.getForm().setTitle("Giriş Yap");
+        loginI18n.getForm().setSubmit("Giriş");
+        loginI18n.getForm().setForgotPassword("Şifremi Unuttum");
+        loginForm.getStyle().set("width", "420px").set("padding", "32px");
+        LoginI18n.ErrorMessage errorMessage = new LoginI18n.ErrorMessage();
+        errorMessage.setTitle("Hatalı Giriş");
+        errorMessage.setMessage("Kullanıcı adı veya şifre hatalı.");
+        loginI18n.setErrorMessage(errorMessage);
+        loginI18n.setHeader(new LoginI18n.Header());
+        loginI18n.getHeader().setTitle("Giriş Yap");
+        loginForm.setI18n(loginI18n);
 
-        Button registerButton = new Button("Kayıt Ol", event ->
-                getUI().ifPresent(ui -> ui.navigate("/login/register"))
-        );
-        registerButton.getStyle().set("margin-top", "1em");
+        loginForm.getStyle().set("width", "350px");
 
-        add(info, loginForm, registerButton);
+        FooterBar footerBar = new FooterBar();
+        add(loginForm, footerBar);
     }
 
 
@@ -50,17 +58,14 @@ public class LoginView extends VerticalLayout {
                     request,
                     AuthenticationResponse.class
             );
-            System.out.println("Response: " + response);
             if (response != null && response.getToken() != null) {
                 setCookie(response.getToken());
-                // Role göre yönlendirme
                 redirection(response);
-
             } else {
-                Notification.show("Giriş başarısız.");
+                loginForm.setError(true); // Hatalı girişte formu hata durumuna al
             }
         } catch (Exception e) {
-            Notification.show("Sunucuya ulaşılamadı veya hatalı bilgi.");
+            loginForm.setError(true); // Sunucu hatasında da hata durumuna al
         }
     }
 

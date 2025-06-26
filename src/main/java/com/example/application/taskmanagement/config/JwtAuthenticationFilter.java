@@ -27,6 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException
     {
+        String path = request.getRequestURI();
+        if (path.startsWith("/VAADIN/") || path.startsWith("/frontend/") || path.startsWith("/images/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         System.out.println("Processing JWT authentication filter");
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null) {

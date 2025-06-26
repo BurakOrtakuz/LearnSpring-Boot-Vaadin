@@ -1,0 +1,10 @@
+@import "footer.css";
+@import "mainNavbar.css";
+@import "docktorSideBar.css";
+
+vaadin-login-form {
+    --lumo-font-size-m: 1.2rem;
+    --lumo-size-m: 48px;
+    --lumo-border-radius: 12px;
+    box-shadow: 0 4px 32px rgba(70,53,177,0.10);
+}

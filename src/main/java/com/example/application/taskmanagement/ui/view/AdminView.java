@@ -1,16 +1,15 @@
 package com.example.application.taskmanagement.ui.view;
 
-import com.example.application.base.ui.view.MainLayout;
+import com.example.application.base.ui.component.MainLayout;
+import com.example.application.taskmanagement.auth.TokenNotFoundException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.*;
@@ -23,7 +22,9 @@ import java.util.stream.Collectors;
 @RolesAllowed("ADMIN")
 public class AdminView extends VerticalLayout {
 
-    public AdminView() {
+    private String token;
+    public AdminView() throws TokenNotFoundException {
+        setToken();
         TextField firstName = new TextField("Ad");
         TextField lastName = new TextField("Soyad");
         TextField username = new TextField("Kullanıcı Adı");
@@ -38,19 +39,7 @@ public class AdminView extends VerticalLayout {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            String token = null;
-            Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("jwtToken".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-            if (token != null) {
-                headers.setBearerAuth(token);
-            }
+            headers.setBearerAuth(token);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<List> response = restTemplate.exchange(
@@ -75,7 +64,7 @@ public class AdminView extends VerticalLayout {
         Button addButton = new Button("Kullanıcı Ekle", event -> {
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                String url = "/api/v1/auth/adminRegister";
+                String url = "http://localhost:8080/api/v1/auth/adminRegister";
 
                 String body = String.format(
                         "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"roleName\":\"%s\"}",
@@ -85,7 +74,17 @@ public class AdminView extends VerticalLayout {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
 
-                String token = (String) VaadinSession.getCurrent().getAttribute("token");
+                // Token'ı cookie'den al
+                String token = null;
+                Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("jwtToken".equals(cookie.getName())) {
+                            token = cookie.getValue();
+                            break;
+                        }
+                    }
+                }
                 if (token != null) {
                     headers.setBearerAuth(token);
                 }
@@ -104,7 +103,6 @@ public class AdminView extends VerticalLayout {
             }
         });
 
-        // Alanları alt alta ekle
         add(
                 firstName,
                 lastName,
@@ -114,5 +112,17 @@ public class AdminView extends VerticalLayout {
                 roleComboBox,
                 addButton
         );
+    }
+    private void setToken() throws TokenNotFoundException {
+        Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    return;
+                }
+            }
+        }
+        throw new TokenNotFoundException("JWT token not found in cookies");
     }
 }

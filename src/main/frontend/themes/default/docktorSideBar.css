@@ -1,0 +1,35 @@
+.doctor-logo {
+    font-size: 32px;
+    padding: 8px 16px;
+    color: #AEEA94;
+    text-align: center;
+}
+
+.doctor-logo-link {
+    text-decoration: none;
+    margin-bottom: 128px;
+    display: block;
+}
+
+.doctor-link {
+    width: 100%;
+    display: block;
+    margin: 0;
+    font-size: 16px;
+    color: #FFFBCA;
+    padding: 12px 0;
+    border: 2px dashed #B771E5;
+    background: transparent;
+    border-radius: 0;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s, border 0.2s, color 0.2s;
+    box-sizing: border-box;
+}
+
+.doctor-link:hover {
+    background: #7a3fc7;
+    border: 2px solid #7a3fc7;
+    color: #AEEA94;
+    text-decoration: none;
+}

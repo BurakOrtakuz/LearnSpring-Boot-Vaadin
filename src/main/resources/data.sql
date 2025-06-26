@@ -1,6 +1,6 @@
-INSERT INTO role ( name) VALUES ( 'ADMIN') ON CONFLICT  DO NOTHING;
-INSERT INTO role ( name) VALUES ( 'DOCTOR') ON CONFLICT DO NOTHING;
-INSERT INTO role ( name) VALUES ('PATIENT') ON CONFLICT DO NOTHING;
+INSERT INTO role (role_id, name) VALUES ( 1,'ADMIN') ON CONFLICT  DO NOTHING;
+INSERT INTO role (role_id, name) VALUES ( 2,'DOCTOR') ON CONFLICT DO NOTHING;
+INSERT INTO role (role_id, name) VALUES (3,'PATIENT') ON CONFLICT  DO NOTHING;
 
 -- Admin kullanıcısını ekle (eğer yoksa)
 INSERT INTO person (id, first_name, last_name, username, email, password, role_id)
@@ -9,4 +9,4 @@ VALUES (1, 'Admin', 'User', 'admin', 'admin@example.com',
 ON CONFLICT (id) DO NOTHING;
 -- The password is 'admin123'
 
-ALTER SEQUENCE person_seq INCREMENT BY 1 MINVALUE 1 RESTART WITH 2;
+SELECT setval('person_seq', COALESCE((SELECT MAX(id) FROM person), 1) + 1, false);
