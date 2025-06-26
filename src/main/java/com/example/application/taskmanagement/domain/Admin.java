@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "admin")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Admin {
     @Id
+    @Column(name = "admin_id")
     private Long adminId;
 
     @OneToOne
@@ -16,5 +18,6 @@ public class Admin {
     @JoinColumn(name = "admin_id")
     private Person person;
 
+    @Column(name = "rank")
     private String rank;
 }

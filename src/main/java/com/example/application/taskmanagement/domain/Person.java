@@ -21,25 +21,38 @@ public class Person implements UserDetails
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "person_seq")
     @SequenceGenerator(name= "person_seq", sequenceName = "person_seq", allocationSize = 1)
+    @Column(name = "person_id")
     private Long id;
-    @Column(nullable = false)
+
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @Column(nullable = false)
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-
-    @Column(unique = true, nullable = false)
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
-    @Column(nullable = false)
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email")
     private String email;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @Column(name = "gender")
     private String gender;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "address")
     private String address;
 
     @Override

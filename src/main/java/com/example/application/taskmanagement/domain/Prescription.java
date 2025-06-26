@@ -5,12 +5,14 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@Table(name = "prescription")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prescription_id")
     private Long prescriptionId;
 
     @ManyToOne
@@ -23,4 +25,12 @@ public class Prescription {
 
     @OneToMany(mappedBy = "prescription")
     private List<PrescriptionMedicine> medicines;
+
+    @ManyToOne
+    @JoinColumn(name = "examination_id")
+    private Examination examination;
+
+    @Lob
+    @Column(name = "document")
+    private byte[] document;
 }
