@@ -24,4 +24,7 @@ Jasper repos ile rapor alınabilir. PDF-HTML-Excel gibi formatlarda rapor alına
 Gridde tıklanılan kaydın ekranı gelmeli.
 En üstte bilgiler altta muaneler altında da reçeteler olmalı.
 
-Reçeteye de dökümantasyon eklensin. PDF sürükle bırak ile eklenebilir   .
+Reçeteye de dökümantasyon eklensin. PDF sürükle bırak ile eklenebilir.
+
+AdminPanele sidebar eklenecek.
+Jasper için altyapı yapıldı.
