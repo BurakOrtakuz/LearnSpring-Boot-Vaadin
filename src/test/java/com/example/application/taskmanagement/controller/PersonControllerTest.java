@@ -1,7 +1,8 @@
 package com.example.application.taskmanagement.controller;
 
-import com.example.application.taskmanagement.domain.Person;
-import com.example.application.taskmanagement.service.IPersonService;
+import com.example.application.controller.PersonController;
+import com.example.application.domain.Person;
+import com.example.application.service.IPersonService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

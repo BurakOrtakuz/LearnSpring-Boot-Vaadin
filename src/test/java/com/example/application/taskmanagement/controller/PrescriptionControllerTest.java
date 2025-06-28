@@ -1,7 +1,8 @@
 package com.example.application.taskmanagement.controller;
 
-import com.example.application.taskmanagement.domain.Prescription;
-import com.example.application.taskmanagement.service.IPrescriptionService;
+import com.example.application.controller.PrescriptionController;
+import com.example.application.domain.Prescription;
+import com.example.application.service.IPrescriptionService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

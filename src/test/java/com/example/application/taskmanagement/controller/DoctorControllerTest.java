@@ -1,7 +1,8 @@
 package com.example.application.taskmanagement.controller;
 
-import com.example.application.taskmanagement.domain.Doctor;
-import com.example.application.taskmanagement.service.IDoctorService;
+import com.example.application.controller.DoctorController;
+import com.example.application.domain.Doctor;
+import com.example.application.service.IDoctorService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

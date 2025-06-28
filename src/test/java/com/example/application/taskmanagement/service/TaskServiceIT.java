@@ -1,8 +1,9 @@
 package com.example.application.taskmanagement.service;
 
 import com.example.application.TestcontainersConfiguration;
-import com.example.application.taskmanagement.domain.Task;
-import com.example.application.taskmanagement.domain.TaskRepository;
+import com.example.application.domain.Task;
+import com.example.application.domain.TaskRepository;
+import com.example.application.service.TaskService;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

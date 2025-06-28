@@ -1,7 +1,8 @@
 package com.example.application.taskmanagement.controller;
 
-import com.example.application.taskmanagement.domain.Role;
-import com.example.application.taskmanagement.service.IRoleService;
+import com.example.application.controller.RoleController;
+import com.example.application.domain.Role;
+import com.example.application.service.IRoleService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

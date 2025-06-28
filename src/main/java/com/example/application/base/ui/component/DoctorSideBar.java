@@ -1,11 +1,11 @@
 package com.example.application.base.ui.component;
 
 import com.example.application.base.ui.view.HomeView;
-import com.example.application.taskmanagement.ui.view.Patient.AppointmentsView;
-import com.example.application.taskmanagement.ui.view.Doctor.CreatePrescriptionView;
-import com.example.application.taskmanagement.ui.view.Doctor.DoctorView;
-import com.example.application.taskmanagement.ui.view.LoginView;
-import com.example.application.taskmanagement.ui.view.RegisterView;
+import com.example.application.base.ui.view.Patient.AppointmentsView;
+import com.example.application.base.ui.view.Doctor.CreatePrescriptionView;
+import com.example.application.base.ui.view.Doctor.DoctorView;
+import com.example.application.base.ui.view.LoginView;
+import com.example.application.base.ui.view.RegisterView;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLayout;

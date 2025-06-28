@@ -2,9 +2,9 @@ package com.example.application.base.ui.component;
 
 import com.example.application.base.ui.view.AboutView;
 import com.example.application.base.ui.view.HomeView;
-import com.example.application.taskmanagement.ui.view.Patient.AppointmentsView;
-import com.example.application.taskmanagement.ui.view.LoginView;
-import com.example.application.taskmanagement.ui.view.RegisterView;
+import com.example.application.base.ui.view.Patient.AppointmentsView;
+import com.example.application.base.ui.view.LoginView;
+import com.example.application.base.ui.view.RegisterView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -14,7 +14,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.example.application.taskmanagement.domain.Person;
+import com.example.application.domain.Person;
 
 @AnonymousAllowed
 public class MainNavbar extends AppLayout {
