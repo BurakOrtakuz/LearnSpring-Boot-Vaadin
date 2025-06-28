@@ -1,6 +1,6 @@
-package com.example.application.taskmanagement.ui.view;
+package com.example.application.taskmanagement.ui.view.Patient;
 
-import com.example.application.base.ui.component.MainLayout;
+import com.example.application.base.ui.component.MainNavbar;
 import com.example.application.taskmanagement.domain.Person;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -8,7 +8,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-@Route(value = "/patient", layout = MainLayout.class)
+@Route(value = "/patient", layout = MainNavbar.class)
 @RolesAllowed("PATIENT")
 public class PatientView extends VerticalLayout {
 

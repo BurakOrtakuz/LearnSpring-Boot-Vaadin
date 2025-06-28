@@ -1,9 +1,9 @@
 package com.example.application.base.ui.component;
 
-import com.example.application.base.ui.view.AboutView;
 import com.example.application.base.ui.view.HomeView;
-import com.example.application.taskmanagement.ui.view.AppointmentsView;
-import com.example.application.taskmanagement.ui.view.DoctorView;
+import com.example.application.taskmanagement.ui.view.Patient.AppointmentsView;
+import com.example.application.taskmanagement.ui.view.Doctor.CreatePrescriptionView;
+import com.example.application.taskmanagement.ui.view.Doctor.DoctorView;
 import com.example.application.taskmanagement.ui.view.LoginView;
 import com.example.application.taskmanagement.ui.view.RegisterView;
 import com.vaadin.flow.component.html.H1;
@@ -35,7 +35,7 @@ public class DoctorSideBar extends VerticalLayout implements RouterLayout {
             .set("text-decoration", "none");
 
         RouterLink home = new RouterLink("Ana Sayfa", HomeView.class);
-        RouterLink about = new RouterLink("Hakkında", AboutView.class);
+        RouterLink about = new RouterLink("Reçete", CreatePrescriptionView.class);
         RouterLink appointments = new RouterLink("Randevular", AppointmentsView.class);
         RouterLink login = new RouterLink("Giriş Yap", LoginView.class);
         RouterLink register = new RouterLink("Kayıt Ol", RegisterView.class);

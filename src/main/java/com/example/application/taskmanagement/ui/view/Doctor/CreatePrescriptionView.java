@@ -1,4 +1,4 @@
-package com.example.application.taskmanagement.ui.view;
+package com.example.application.taskmanagement.ui.view.Doctor;
 
 import com.example.application.base.ui.layout.DoctorAppLayout;
 import com.example.application.base.ui.component.FooterBar;
@@ -20,21 +20,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.annotation.security.RolesAllowed;
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Route(value = "/doctor", layout = DoctorAppLayout.class)
+@Route(value = "/create-prescription", layout = DoctorAppLayout.class)
 @RolesAllowed("DOCTOR")
-public class DoctorView extends VerticalLayout {
+public class CreatePrescriptionView extends VerticalLayout {
     @Autowired
     private CreatePdf createPdf;
 
-    public DoctorView() {
-
-        Text welcomeText = new Text("Doktor Paneli");
+    public CreatePrescriptionView() {
+        Text welcomeText = new Text("Reçete Oluştur");
         add(new FooterBar());
         add(welcomeText);
 

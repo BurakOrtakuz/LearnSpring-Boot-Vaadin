@@ -3,7 +3,7 @@ package com.example.application.base.ui.component;
 import com.example.application.base.ui.view.AboutView;
 import com.example.application.base.ui.view.HomeView;
 import com.example.application.taskmanagement.ui.view.AdminView;
-import com.example.application.taskmanagement.ui.view.AppointmentsView;
+import com.example.application.taskmanagement.ui.view.Patient.AppointmentsView;
 import com.example.application.taskmanagement.ui.view.LoginView;
 import com.example.application.taskmanagement.ui.view.RegisterView;
 import com.vaadin.flow.component.html.H1;

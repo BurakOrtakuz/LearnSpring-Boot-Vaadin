@@ -1,4 +1,4 @@
-package com.example.application.taskmanagement.ui.view;
+package com.example.application.taskmanagement.ui.view.Patient;
 
 import com.example.application.base.ui.component.FooterBar;
 import com.example.application.base.ui.component.MainNavbar;

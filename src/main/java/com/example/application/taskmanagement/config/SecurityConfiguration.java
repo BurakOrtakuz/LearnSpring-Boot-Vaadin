@@ -2,6 +2,7 @@ package com.example.application.taskmanagement.config;
 
 import com.example.application.taskmanagement.ui.view.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +40,21 @@ public class SecurityConfiguration extends VaadinWebSecurity {
                             "/error",
                             "/offline.html"
                     ).permitAll()
-        );
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/home")
+                .permitAll()
+                .logoutRequestMatcher(new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/logout", "GET"))
+                .addLogoutHandler((request, response, authentication) -> {
+                    Cookie cookie = new Cookie("jwtToken", null);
+                    cookie.setPath("/");
+                    cookie.setHttpOnly(true);
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                })
+            );
         super.configure(http);
-
         setLoginView(http, LoginView.class);
     }
 
