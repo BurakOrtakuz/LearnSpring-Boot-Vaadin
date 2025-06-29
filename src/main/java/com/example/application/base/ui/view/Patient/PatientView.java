@@ -14,7 +14,9 @@ import com.example.application.domain.Examination;
 import com.example.application.domain.Patient;
 import com.example.application.service.ExaminationService;
 import com.example.application.service.PatientService;
+import com.example.application.service.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.flow.component.html.Anchor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,9 +31,13 @@ public class PatientView extends VerticalLayout {
     @Autowired
     private PatientService patientService;
 
-    public PatientView(ExaminationService examinationService, PatientService patientService) {
+    @Autowired
+    private PrescriptionService prescriptionService;
+
+    public PatientView(ExaminationService examinationService, PatientService patientService, PrescriptionService prescriptionService) {
         this.examinationService = examinationService;
         this.patientService = patientService;
+        this.prescriptionService = prescriptionService;
         System.out.println("PatientView initialized");
         setSpacing(true);
         setPadding(true);
@@ -56,7 +62,20 @@ public class PatientView extends VerticalLayout {
                 List<ColumnConfig<Examination, ?>> columns = List.of(
                         new ColumnConfig<>("Muayene ID", Examination::getExaminationId),
                         new ColumnConfig<>("Doktor", e -> e.getDoctor() != null ? e.getDoctor().getPerson().getFirstName() + " " + e.getDoctor().getPerson().getLastName() : "-"),
-                        new ColumnConfig<>("Şikayet", Examination::getComplaint)
+                        new ColumnConfig<>("Şikayet", Examination::getComplaint),
+                        new ColumnConfig<>("PDF Görüntüle", e -> {
+                            var prescriptionOpt = prescriptionService.findAll().stream()
+                                .filter(p -> p.getExamination() != null && p.getExamination().getExaminationId().equals(e.getExaminationId()))
+                                .findFirst();
+                            if (prescriptionOpt.isPresent()) {
+                                Long prescriptionId = prescriptionOpt.get().getPrescriptionId();
+                                Anchor pdfLink = new Anchor("/api/prescription/pdf/" + prescriptionId, "PDF Görüntüle");
+                                pdfLink.setTarget("_blank");
+                                return pdfLink;
+                            } else {
+                                return new com.vaadin.flow.component.html.Span("-");
+                            }
+                        })
                 );
                 System.out.println("Examinations: " + examinations);
                 GenericTable<Examination> table = new GenericTable<>(columns, examinations);

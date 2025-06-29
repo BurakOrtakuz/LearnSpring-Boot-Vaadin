@@ -1,15 +1,16 @@
 package com.example.application.base.ui.layout;
 
-import com.example.application.base.ui.view.Patient.AppointmentsView;
-import com.example.application.base.ui.view.Doctor.CreatePrescriptionView;
+import com.example.application.base.ui.view.Doctor.DoctorAppointmentsView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
 import com.example.application.base.ui.view.LoginView;
-import com.example.application.base.ui.view.RegisterView;
+import com.example.application.base.ui.view.Doctor.DoctorAddMedicineView;
+import com.example.application.base.ui.view.Doctor.DoctorAddUnitView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 
 public class DoctorAppLayout extends AppLayout {
     public DoctorAppLayout() {
@@ -27,18 +28,21 @@ public class DoctorAppLayout extends AppLayout {
         logoLink.setClassName("doctor-logo-link");
 
         RouterLink home = new RouterLink("Ana Sayfa", DoctorView.class);
-        RouterLink about = new RouterLink("Reçete", CreatePrescriptionView.class);
-        RouterLink appointments = new RouterLink("Randevular", AppointmentsView.class);
-        RouterLink login = new RouterLink("Giriş Yap", LoginView.class);
-        RouterLink register = new RouterLink("Kayıt Ol", RegisterView.class);
         home.setClassName("doctor-link");
-        about.setClassName("doctor-link");
+        RouterLink appointments = new RouterLink("Randevular", DoctorAppointmentsView.class);
         appointments.setClassName("doctor-link");
-        login.setClassName("doctor-link");
-        register.setClassName("doctor-link");
-
+        RouterLink addMedicine = new RouterLink("İlaç Ekle", DoctorAddMedicineView.class);
+        addMedicine.setClassName("doctor-link");
+        RouterLink addUnit = new RouterLink("Birim Ekle", DoctorAddUnitView.class);
+        addUnit.setClassName("doctor-link");
+        RouterLink logout = new RouterLink("Çıkış yap", LoginView.class);
+        logout.setClassName("doctor-link");
+        logout.getElement().addEventListener("click", e -> {
+            VaadinSession.getCurrent().getSession().invalidate();
+            getUI().ifPresent(ui -> ui.getPage().setLocation("/login/login"));
+        });
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerLayout.add(logoLink, home, about, appointments, login, register);
+        drawerLayout.add(logoLink, home, appointments, addMedicine, addUnit, logout);
         addToDrawer(drawerLayout);
     }
 }

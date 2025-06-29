@@ -21,4 +21,7 @@ public class PrescriptionMedicine {
     @ManyToOne
     @JoinColumn(name = "prescription_id")
     private Prescription prescription;
+
+    @Column(name = "description")
+    private String description;
 }
