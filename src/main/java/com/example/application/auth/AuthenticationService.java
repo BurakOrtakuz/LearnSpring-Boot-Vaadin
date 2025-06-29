@@ -2,7 +2,9 @@ package com.example.application.auth;
 
 import com.example.application.config.JwtService;
 import com.example.application.domain.Person;
+import com.example.application.domain.Patient;
 import com.example.application.domain.Role;
+import com.example.application.repository.IPatientRepository;
 import com.example.application.repository.IPersonRepository;
 
 import com.example.application.repository.IRoleRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final IPersonRepository personRepository;
+    private final IPatientRepository patientRepository;
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService JwtService;
@@ -30,8 +33,7 @@ public class AuthenticationService {
         Role role = roleRepository.findByName(defaultRoleName)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + defaultRoleName));
 
-
-        Person user = Person.builder()
+        Person person = Person.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .username(request.getUsername())
@@ -39,10 +41,14 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
-        personRepository.save(user);
-        var jwtToken = JwtService.generateToken(user);
-        return RegisterResponse.builder().
-                token(jwtToken)
+
+        Patient patient = new Patient();
+        patient.setPerson(person);
+        patientRepository.save(patient);
+
+        var jwtToken = JwtService.generateToken(person);
+        return RegisterResponse.builder()
+                .token(jwtToken)
                 .build();
     }
 

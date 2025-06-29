@@ -2,10 +2,12 @@ package com.example.application.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "patient")
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Patient {

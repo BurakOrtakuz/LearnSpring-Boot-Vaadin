@@ -1,0 +1,29 @@
+/* GenericTable için özel stiller */
+.generic-table {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(70,53,177,0.10);
+    font-size: 1.1em;
+    margin: 24px 0;
+    padding: 12px;
+}
+
+.generic-table .vaadin-grid-cell-content {
+    padding: 12px 8px;
+}
+
+.generic-table .vaadin-grid-header-cell {
+    background: #4635B1;
+    color: #FFFBCA;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.generic-table .vaadin-grid-row {
+    transition: background 0.2s;
+}
+
+.generic-table .vaadin-grid-row:hover {
+    background: #f3f0fa;
+}
+

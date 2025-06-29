@@ -3,6 +3,8 @@ package com.example.application.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "examination")
 @Data
@@ -24,5 +26,8 @@ public class Examination {
 
     @Column(name = "complaint")
     private String complaint;
+
+    @Column(name = "date")
+    private Date date;
 }
 
