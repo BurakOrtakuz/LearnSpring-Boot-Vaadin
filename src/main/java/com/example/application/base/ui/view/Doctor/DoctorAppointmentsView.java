@@ -44,14 +44,14 @@ public class DoctorAppointmentsView extends VerticalLayout {
                 .collect(Collectors.toList());
 
         List<ColumnConfig<Examination, ?>> columns = List.of(
-                new ColumnConfig<>("Muayene ID", Examination::getExaminationId),
-                new ColumnConfig<>("Hasta", e -> e.getPatient() != null ? e.getPatient().getPerson().getFirstName() + " " + e.getPatient().getPerson().getLastName() : "-"),
-                new ColumnConfig<>("Tarih", e -> e.getDate() != null ? e.getDate().toString() : "-"),
-                new ColumnConfig<>("Şikayet", Examination::getComplaint),
+                new ColumnConfig<>("Muayene ID", Examination::getExaminationId, true),
+                new ColumnConfig<>("Hasta", e -> e.getPatient() != null ? e.getPatient().getPerson().getFirstName() + " " + e.getPatient().getPerson().getLastName() : "-", true),
+                new ColumnConfig<>("Tarih", e -> e.getDate() != null ? e.getDate().toString() : "-", true),
+                new ColumnConfig<>("Şikayet", Examination::getComplaint, true),
                 new ColumnConfig<>("Reçete Yaz", e -> {
                     RouterLink link = new RouterLink("Reçete Yaz", CreatePrescriptionView.class, e.getExaminationId());
                     return link;
-                })
+                }, true)
         );
 
         GenericTable<Examination> table = new GenericTable<>(columns, examinations);

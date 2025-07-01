@@ -17,7 +17,7 @@ public class CreatePdf {
     /**
      * PDF oluşturur. Jasper dosyasını derlemeden, hazır .jasper dosyasını kullanır.
      * @param prescription Reçete bilgileri (Jaster.Prescription)
-     * @param medicines domain.Medicine listesidir
+     * @param prescriptionMedicines domain.Medicine listesidir
      * @return PDF dosyasının byte dizisi
      * @throws Exception Hata durumunda fırlatılır
      */

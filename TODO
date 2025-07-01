@@ -15,9 +15,9 @@ Düzgün bir tasarım yapılmadı
 
 Muane kayıtları tablosu olsun. +
 Randevu alma tablosu olsun. +
-Muanede yapılacak işlemler olsun. İlaç-reçete vs.
+Muanede yapılacak işlemler olsun. İlaç-reçete vs. +
 Muaneleri listeleyen bir tablo olsun. +
-Muane ekranının sol tarafında bir filtre olsu. Tarih, doktor, hasta, ilaç gibi filtreler olsun.
+Muane ekranının sol tarafında bir filtre olsu. Tarih, doktor, hasta, ilaç gibi filtreler olsun. Uı filtreleme değil backend sorgu filtreleme olsun
 Listelenen muannelerin raporları alınabilir olsun.
 Rapor içerisinde hastanın bilgileri, nedenleri sonuç ilaç vs +
 Jasper repos ile rapor alınabilir. PDF-HTML-Excel gibi formatlarda rapor alınabilir.
@@ -28,3 +28,18 @@ Reçeteye de dökümantasyon eklensin. PDF sürükle bırak ile eklenebilir.
 
 AdminPanele sidebar eklenecek.
 Jasper için altyapı yapıldı.
+
+
+Querry ile filtreleme yapılmalı.
+Bu kadar
+
+Jasper kısmı önemli.
+Subreport çalış.
+ilaç eklendiğinde ikinci sayfaya geçsin.
+Dialog ile componentler ekleme sistemi. Doktor popup ile randevu alma sistemi. Kayıt yapılacak yerleri dinamik olarak diyalog ile devam et.
+Randevu seçerken querry ile sadece saatleri al.
+Şifremi unuttum kısmını yapılacak.
+login endpointi düzenlenecek.
+Notification entity olsun. Doktor randevusu ile ilgili mail yada click için notification olsun. Generic bir yapı olsun hasta doktor vs kullanabilsin.
+
+Yapay zekayı daha az kullanalım. Özellikle dialog kısmı için.

@@ -8,13 +8,13 @@ public class GenericTable<T> extends Grid<T> {
     public GenericTable(List<ColumnConfig<T, ?>> columns, List<T> items) {
         super();
         for (ColumnConfig<T, ?> col : columns) {
-            if (com.vaadin.flow.component.Component.class.isAssignableFrom(col.getValueProvider().apply(items.isEmpty() ? null : items.get(0)).getClass())) {
-                addComponentColumn(item -> (Component) col.getValueProvider().apply(item)).setHeader(col.getHeader());
+            if (col.isComponentColumn()) {
+                addComponentColumn(item -> (Component) col.getValueProvider().apply(item)).setHeader(col.getHeader()).setSortable(col.isSortable());
             } else {
-                addColumn(col.getValueProvider()).setHeader(col.getHeader());
+                addColumn(col.getValueProvider()).setHeader(col.getHeader()).setSortable(col.isSortable());
             }
         }
-        setItems(items);
+        setItems(items == null ? List.of() : items);
         addClassName("generic-table");
     }
 }

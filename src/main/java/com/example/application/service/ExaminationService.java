@@ -1,6 +1,7 @@
 package com.example.application.service;
 
 import com.example.application.domain.Examination;
+import com.example.application.dto.IExaminationSearchResult;
 import com.example.application.repository.IExaminationRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,11 @@ public class ExaminationService implements IExaminationService {
     @Override
     public void deleteById(Long id) {
         examinationRepository.deleteById(id);
+    }
+
+    @Override
+    public List<IExaminationSearchResult> search(String query) {
+        return examinationRepository.searchResult(query);
     }
 }
 
