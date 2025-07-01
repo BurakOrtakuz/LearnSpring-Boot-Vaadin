@@ -33,13 +33,12 @@ Jasper için altyapı yapıldı.
 Querry ile filtreleme yapılmalı.
 Bu kadar
 
-Jasper kısmı önemli.
-Subreport çalış.
-ilaç eklendiğinde ikinci sayfaya geçsin.
+Jasper kısmı önemli. Subreport çalış.
+Raporda fazla ilaç eklendiğinde ikinci sayfaya geçsin.
 Dialog ile componentler ekleme sistemi. Doktor popup ile randevu alma sistemi. Kayıt yapılacak yerleri dinamik olarak diyalog ile devam et.
 Randevu seçerken querry ile sadece saatleri al.
 Şifremi unuttum kısmını yapılacak.
-login endpointi düzenlenecek.
+login endpointi(endpoint ismi) düzenlenecek.
 Notification entity olsun. Doktor randevusu ile ilgili mail yada click için notification olsun. Generic bir yapı olsun hasta doktor vs kullanabilsin.
 
 Yapay zekayı daha az kullanalım. Özellikle dialog kısmı için.

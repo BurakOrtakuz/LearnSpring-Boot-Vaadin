@@ -2,9 +2,10 @@ package com.example.application.dto;
 
 import java.time.LocalDateTime;
 
-public interface IExaminationSearchResult {
+public interface IDoctorExaminationSearchResult {
     LocalDateTime getDate();
-    String getDoctorName();
+    String getPatientName();
     String getComplaint();
     int getPrescriptionId();
+    int getExaminationId();
 }

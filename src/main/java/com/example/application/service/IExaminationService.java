@@ -1,7 +1,8 @@
 package com.example.application.service;
 
 import com.example.application.domain.Examination;
-import com.example.application.dto.IExaminationSearchResult;
+import com.example.application.dto.IDoctorExaminationSearchResult;
+import com.example.application.dto.IPatientExaminationSearchResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ public interface IExaminationService {
     void deleteById(Long id);
 
     // Search
-    List<IExaminationSearchResult> search(String query);
+    List<IPatientExaminationSearchResult> patientSearch(String query);
+    List<IDoctorExaminationSearchResult> doctorSearch(String query);
 }
 

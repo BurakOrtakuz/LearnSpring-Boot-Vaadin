@@ -4,20 +4,26 @@ import com.example.application.base.ui.component.table.ColumnConfig;
 import com.example.application.base.ui.component.table.GenericTable;
 import com.example.application.base.ui.layout.DoctorAppLayout;
 import com.example.application.domain.Doctor;
-import com.example.application.domain.Examination;
 import com.example.application.domain.Person;
+import com.example.application.dto.IDoctorExaminationSearchResult;
 import com.example.application.service.DoctorService;
 import com.example.application.service.ExaminationService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Route(value = "/doctor/appointments", layout = DoctorAppLayout.class)
 @RolesAllowed("DOCTOR")
@@ -38,23 +44,40 @@ public class DoctorAppointmentsView extends VerticalLayout {
             add("Doktor bulunamadı.");
             return;
         }
+        TextField searchField = new TextField();
+        searchField.setWidth("50%");
+        searchField.setPlaceholder("Search");
+        searchField.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
+        searchField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        List<Examination> examinations = examinationService.findAll().stream()
-                .filter(e -> e.getDoctor() != null && e.getDoctor().getDoctorId().equals(doctor.getDoctorId()))
-                .collect(Collectors.toList());
-
-        List<ColumnConfig<Examination, ?>> columns = List.of(
-                new ColumnConfig<>("Muayene ID", Examination::getExaminationId, true),
-                new ColumnConfig<>("Hasta", e -> e.getPatient() != null ? e.getPatient().getPerson().getFirstName() + " " + e.getPatient().getPerson().getLastName() : "-", true),
-                new ColumnConfig<>("Tarih", e -> e.getDate() != null ? e.getDate().toString() : "-", true),
-                new ColumnConfig<>("Şikayet", Examination::getComplaint, true),
+        List<ColumnConfig<IDoctorExaminationSearchResult, ?>> columns = List.of(
+                new ColumnConfig<>("Hasta",IDoctorExaminationSearchResult::getPatientName, true),
+                new ColumnConfig<>("Tarih", e -> e.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), true),
+                new ColumnConfig<>("Şikayet", IDoctorExaminationSearchResult::getComplaint, true),
                 new ColumnConfig<>("Reçete Yaz", e -> {
-                    RouterLink link = new RouterLink("Reçete Yaz", CreatePrescriptionView.class, e.getExaminationId());
-                    return link;
-                }, true)
+                    if( e.getPrescriptionId() != -1) {
+                        HorizontalLayout layout = new HorizontalLayout();
+                        layout.setSpacing(true);
+                        layout.add(new RouterLink("Reçeteyi Güncelle", CreatePrescriptionView.class, (long)e.getExaminationId()));
+                        layout.add(new Anchor("/api/prescription/pdf/" + e.getPrescriptionId(), "Reçete Görüntüle"));
+                        return layout;
+                    }
+                    return new RouterLink("Reçete Yaz", CreatePrescriptionView.class, (long)e.getExaminationId());
+                }, false,true)
         );
 
-        GenericTable<Examination> table = new GenericTable<>(columns, examinations);
-        add(table);
+        GenericTable<IDoctorExaminationSearchResult> table = new GenericTable<>(columns, new ArrayList<>());
+        add(searchField,table);
+
+        doctorService.findById(person.getId()).ifPresent(d -> {
+            List<IDoctorExaminationSearchResult> examinations = examinationService.doctorSearch("");
+            table.setItems(examinations);
+        });
+
+        searchField.addValueChangeListener(event -> {
+           String query = searchField.getValue();
+           List<IDoctorExaminationSearchResult> filteredExamination = examinationService.doctorSearch(query);
+           table.setItems(filteredExamination);
+        });
     }
 }

@@ -2,7 +2,7 @@ package com.example.application.base.ui.view.Patient;
 
 import com.example.application.base.ui.layout.PatientMainLayout;
 import com.example.application.domain.Person;
-import com.example.application.dto.IExaminationSearchResult;
+import com.example.application.dto.IPatientExaminationSearchResult;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -30,7 +30,7 @@ public class PatientView extends VerticalLayout {
     private ExaminationService examinationService;
     private PatientService patientService;
 
-    private List<IExaminationSearchResult> examinations;
+    private List<IPatientExaminationSearchResult> examinations;
     public PatientView(ExaminationService examinationService, PatientService patientService) {
         this.examinationService = examinationService;
         this.patientService = patientService;
@@ -49,10 +49,10 @@ public class PatientView extends VerticalLayout {
             searchField.setValueChangeMode(ValueChangeMode.EAGER);
 
             // Tabloyu dışarıda tanımla ki listener içinde erişebilelim
-            List<ColumnConfig<IExaminationSearchResult, ?>> columns = List.of(
+            List<ColumnConfig<IPatientExaminationSearchResult, ?>> columns = List.of(
                     new ColumnConfig<>("Tarih", e -> e.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), true),
-                    new ColumnConfig<>("Doktor", IExaminationSearchResult::getDoctorName,true),
-                    new ColumnConfig<>("Şikayet", IExaminationSearchResult::getComplaint,true),
+                    new ColumnConfig<>("Doktor", IPatientExaminationSearchResult::getDoctorName,true),
+                    new ColumnConfig<>("Şikayet", IPatientExaminationSearchResult::getComplaint,true),
                     new ColumnConfig<>("Reçete", e -> {
                         if (e.getPrescriptionId() != -1) {
                             Anchor pdfLink = new Anchor("/api/prescription/pdf/" + e.getPrescriptionId(), "Reçete Görüntüle");
@@ -63,19 +63,19 @@ public class PatientView extends VerticalLayout {
                         }
                     },false,true)
             );
-            GenericTable<IExaminationSearchResult> table = new GenericTable<>(columns, new ArrayList<>());
+            GenericTable<IPatientExaminationSearchResult> table = new GenericTable<>(columns, new ArrayList<>());
             add(searchField, table);
 
             patientService.findById(person.getId()).ifPresent(patient -> {
                 // İlk yüklemede boş arama ile doldur
-                List<IExaminationSearchResult> examinations = examinationService.search("");
+                List<IPatientExaminationSearchResult> examinations = examinationService.patientSearch("");
                 System.out.println(examinations);
                 table.setItems(examinations);
             });
 
             searchField.addValueChangeListener(e -> {
                 String query = searchField.getValue();
-                List<IExaminationSearchResult> filtered = examinationService.search(query);
+                List<IPatientExaminationSearchResult> filtered = examinationService.patientSearch(query);
                 table.setItems(filtered);
             });
         } else {
