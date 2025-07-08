@@ -22,7 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Route(value = "/patient/new-appointment", layout = PatientMainLayout.class)
@@ -117,12 +119,10 @@ public class NewAppointmentsView extends VerticalLayout {
             timeComboBox.setItems(new ArrayList<>());
             return;
         }
-        List<Examination> taken = examinationService.findAll().stream()
-                .filter(e -> e.getDoctor() != null && e.getDoctor().getDoctorId().equals(selectedDoctor.getDoctorId()))
-                .filter(e -> e.getDate() != null && e.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().equals(selectedDate))
-                .toList();
+        Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        List<Date> taken = examinationService.getDoctorExaminationHour(selectedDoctor.getDoctorId(), date);
         List<LocalTime> takenTimes = taken.stream()
-                .map(e -> e.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0))
+                .map(e -> e.toInstant().atZone(ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0))
                 .toList();
         List<LocalTime> available = allTimes.stream().filter(t -> !takenTimes.contains(t)).toList();
         timeComboBox.setItems(available);

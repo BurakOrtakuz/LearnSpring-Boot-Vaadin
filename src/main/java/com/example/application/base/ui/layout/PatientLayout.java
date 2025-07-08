@@ -2,7 +2,6 @@ package com.example.application.base.ui.layout;
 
 import com.example.application.base.ui.view.Doctor.CreatePrescriptionView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
-import com.example.application.base.ui.view.LoginView;
 import com.example.application.base.ui.view.Patient.AppointmentsView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
@@ -27,13 +26,11 @@ public class PatientLayout extends AppLayout {
 
         RouterLink about = new RouterLink("Randevularım", CreatePrescriptionView.class);
         RouterLink appointments = new RouterLink("Randevu Al", AppointmentsView.class);
-        RouterLink login = new RouterLink("Kayıtlı ilaçlarım", LoginView.class);
         about.setClassName("doctor-link");
         appointments.setClassName("doctor-link");
-        login.setClassName("doctor-link");
 
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerLayout.add(logoLink, about, appointments, login);
+        drawerLayout.add(logoLink, about, appointments);
         addToDrawer(drawerLayout);
     }
 }

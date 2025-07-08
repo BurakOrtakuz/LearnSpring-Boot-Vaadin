@@ -9,7 +9,6 @@ import com.example.application.dto.IDoctorExaminationSearchResult;
 import com.example.application.service.DoctorService;
 import com.example.application.service.ExaminationService;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;

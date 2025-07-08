@@ -30,15 +30,18 @@ AdminPanele sidebar eklenecek.
 Jasper için altyapı yapıldı.
 
 
-Querry ile filtreleme yapılmalı.
+Querry ile filtreleme yapılmalı.+
 Bu kadar
 
-Jasper kısmı önemli. Subreport çalış.
-Raporda fazla ilaç eklendiğinde ikinci sayfaya geçsin.
+Jasper kısmı önemli. Subreport çalış. Raporda fazla ilaç eklendiğinde ikinci sayfaya geçsin.
 Dialog ile componentler ekleme sistemi. Doktor popup ile randevu alma sistemi. Kayıt yapılacak yerleri dinamik olarak diyalog ile devam et.
-Randevu seçerken querry ile sadece saatleri al.
+Randevu seçerken querry ile sadece saatleri al. NewAppointmentsView.java 120 +
 Şifremi unuttum kısmını yapılacak.
+Doktor Logout düzelt +
 login endpointi(endpoint ismi) düzenlenecek.
 Notification entity olsun. Doktor randevusu ile ilgili mail yada click için notification olsun. Generic bir yapı olsun hasta doktor vs kullanabilsin.
+Arama kısmını field field ayır.
+Bildirim ana sayfada alt alta tam halde bildirim çubuğu olarak navbarda gözüksün.
+İlaç ve birim ekleyi soldan açılır pencere şeklinde ekle.
 
 Yapay zekayı daha az kullanalım. Özellikle dialog kısmı için.

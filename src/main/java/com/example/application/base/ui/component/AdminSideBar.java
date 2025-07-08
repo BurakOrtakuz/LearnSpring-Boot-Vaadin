@@ -4,7 +4,6 @@ import com.example.application.base.ui.view.AboutView;
 import com.example.application.base.ui.view.HomeView;
 import com.example.application.base.ui.view.AdminView;
 import com.example.application.base.ui.view.Patient.AppointmentsView;
-import com.example.application.base.ui.view.LoginView;
 import com.example.application.base.ui.view.RegisterView;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,18 +36,14 @@ public class AdminSideBar extends VerticalLayout implements RouterLayout {
         RouterLink home = new RouterLink("Ana Sayfa", HomeView.class);
         RouterLink about = new RouterLink("Hakkında", AboutView.class);
         RouterLink appointments = new RouterLink("Randevular", AppointmentsView.class);
-        RouterLink login = new RouterLink("Giriş Yap", LoginView.class);
-        RouterLink register = new RouterLink("Kayıt Ol", RegisterView.class);
         logoText.addClassName("admin-logo");
         logoLink.addClassName("admin-logo-link");
 
         home.addClassName("admin-link");
         about.addClassName("admin-link");
         appointments.addClassName("admin-link");
-        login.addClassName("admin-link");
-        register.addClassName("admin-link");
 
         setAlignItems(Alignment.CENTER);
-        add(logoLink, home, about, appointments, login, register);
+        add(logoLink, home, about, appointments);
     }
 }

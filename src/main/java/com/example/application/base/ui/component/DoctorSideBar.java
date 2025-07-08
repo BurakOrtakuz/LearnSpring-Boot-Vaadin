@@ -4,7 +4,6 @@ import com.example.application.base.ui.view.HomeView;
 import com.example.application.base.ui.view.Patient.AppointmentsView;
 import com.example.application.base.ui.view.Doctor.CreatePrescriptionView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
-import com.example.application.base.ui.view.LoginView;
 import com.example.application.base.ui.view.RegisterView;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,18 +36,14 @@ public class DoctorSideBar extends VerticalLayout implements RouterLayout {
         RouterLink home = new RouterLink("Ana Sayfa", HomeView.class);
         RouterLink about = new RouterLink("Reçete", CreatePrescriptionView.class);
         RouterLink appointments = new RouterLink("Randevular", AppointmentsView.class);
-        RouterLink login = new RouterLink("Giriş Yap", LoginView.class);
-        RouterLink register = new RouterLink("Kayıt Ol", RegisterView.class);
         logoText.addClassName("doctor-logo");
         logoLink.addClassName("doctor-logo-link");
 
         home.addClassName("doctor-link");
         about.addClassName("doctor-link");
         appointments.addClassName("doctor-link");
-        login.addClassName("doctor-link");
-        register.addClassName("doctor-link");
 
         setAlignItems(Alignment.CENTER);
-        add(logoLink, home, about, appointments, login, register);
+        add(logoLink, home, about, appointments);
     }
 }

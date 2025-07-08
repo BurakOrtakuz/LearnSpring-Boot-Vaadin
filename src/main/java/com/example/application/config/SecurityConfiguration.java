@@ -1,6 +1,6 @@
 package com.example.application.config;
 
-import com.example.application.base.ui.view.LoginView;
+import com.example.application.base.ui.view.HomeView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
                 })
             );
         super.configure(http);
-        setLoginView(http, LoginView.class);
+        setLoginView(http, HomeView.class);
     }
 
     @Bean

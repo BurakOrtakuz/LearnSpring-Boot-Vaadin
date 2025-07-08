@@ -4,6 +4,7 @@ import com.example.application.domain.Examination;
 import com.example.application.dto.IDoctorExaminationSearchResult;
 import com.example.application.dto.IPatientExaminationSearchResult;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,6 @@ public interface IExaminationService {
     // Search
     List<IPatientExaminationSearchResult> patientSearch(String query);
     List<IDoctorExaminationSearchResult> doctorSearch(String query);
+    List<Date> getDoctorExaminationHour(Long doctorId, Date date);
 }
 

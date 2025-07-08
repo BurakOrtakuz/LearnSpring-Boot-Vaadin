@@ -2,15 +2,14 @@ package com.example.application.base.ui.layout;
 
 import com.example.application.base.ui.view.Doctor.DoctorAppointmentsView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
-import com.example.application.base.ui.view.LoginView;
 import com.example.application.base.ui.view.Doctor.DoctorAddMedicineView;
 import com.example.application.base.ui.view.Doctor.DoctorAddUnitView;
+import com.example.application.base.ui.view.HomeView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
 
 public class DoctorAppLayout extends AppLayout {
     public DoctorAppLayout() {
@@ -35,11 +34,10 @@ public class DoctorAppLayout extends AppLayout {
         addMedicine.setClassName("doctor-link");
         RouterLink addUnit = new RouterLink("Birim Ekle", DoctorAddUnitView.class);
         addUnit.setClassName("doctor-link");
-        RouterLink logout = new RouterLink("Çıkış yap", LoginView.class);
+        RouterLink logout = new RouterLink("Çıkış yap", HomeView.class);
         logout.setClassName("doctor-link");
         logout.getElement().addEventListener("click", e -> {
-            VaadinSession.getCurrent().getSession().invalidate();
-            getUI().ifPresent(ui -> ui.getPage().setLocation("/login/login"));
+            getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
         });
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         drawerLayout.add(logoLink, home, appointments, addMedicine, addUnit, logout);

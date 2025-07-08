@@ -6,6 +6,7 @@ import com.example.application.dto.IPatientExaminationSearchResult;
 import com.example.application.repository.IExaminationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,11 @@ public class ExaminationService implements IExaminationService {
     @Override
     public List<IDoctorExaminationSearchResult> doctorSearch(String query) {
         return examinationRepository.doctorSearchResult(query);
+    }
+
+    @Override
+    public List<Date> getDoctorExaminationHour(Long doctorId, Date date) {
+        return examinationRepository.getDoctorHour(doctorId, date);
     }
 }
 

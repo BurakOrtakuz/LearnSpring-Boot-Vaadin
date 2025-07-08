@@ -1,6 +1,7 @@
 package com.example.application.api;
 
 import com.example.application.service.PrescriptionService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/prescription")
+@PermitAll
 public class PrescriptionPdfController {
     private final PrescriptionService prescriptionService;
 
