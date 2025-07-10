@@ -1,7 +1,7 @@
 package com.example.application.base.ui.view;
 
 import com.example.application.base.ui.component.FooterBar;
-import com.example.application.base.ui.component.MainNavbar;
+import com.example.application.base.ui.layout.MainNavbar;
 import com.example.application.auth.AuthenticationService;
 import com.example.application.auth.RegisterRequest;
 import com.example.application.auth.RegisterResponse;

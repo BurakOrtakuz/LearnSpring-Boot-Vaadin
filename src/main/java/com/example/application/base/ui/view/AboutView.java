@@ -1,6 +1,6 @@
 package com.example.application.base.ui.view;
 
-import com.example.application.base.ui.component.MainNavbar;
+import com.example.application.base.ui.layout.MainNavbar;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;

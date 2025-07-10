@@ -1,7 +1,6 @@
 package com.example.application.base.ui.layout;
 
 import com.example.application.auth.AuthenticationService;
-import com.example.application.base.ui.component.MainNavbar;
 import com.example.application.base.ui.view.Patient.NewAppointmentsView;
 import com.example.application.base.ui.view.Patient.PatientView;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
