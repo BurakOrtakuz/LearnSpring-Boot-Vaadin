@@ -205,7 +205,9 @@
 .register-dialog-password-field,
 .register-dialog-birthdate-field,
 .register-dialog-phone-field,
-.register-dialog-address-field {
+.register-dialog-address-field,
+.register-dialog-email-field,
+.register-dialog-confirm-password-field{
     flex: 1 1 0;
     font-size: 1.1em;
     color: #4635B1;
@@ -216,7 +218,9 @@
 .register-dialog-password-field label,
 .register-dialog-birthdate-field label,
 .register-dialog-phone-field label,
-.register-dialog-address-field label {
+.register-dialog-address-field label,
+.register-dialog-email-field label,
+.register-dialog-confirm-password-field label{
     color: #4635B1;
     font-weight: 500;
 }
