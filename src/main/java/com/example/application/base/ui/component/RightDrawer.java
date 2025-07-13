@@ -21,12 +21,13 @@ public class RightDrawer extends Dialog {
     public RightDrawer() {
         super();
         this.setClassName("rightDrawer");
-        this.setModal(false);
+        this.setSizeFull();
         this.setDraggable(false);
         this.setResizable(false);
 
         // Ana container
         content = new VerticalLayout();
+        content.setClassName("drawer-Vertical-content");
         content.setPadding(false);
         content.setSpacing(false);
         content.setSizeFull();
@@ -43,13 +44,11 @@ public class RightDrawer extends Dialog {
         content.setFlexGrow(0, header);
         content.setFlexGrow(1, contentArea);
 
-        this.add(content);
+        super.add(content);
 
-        // Kapatma event'i
         closeButton.addClickListener(e -> this.close());
-
-        // ESC tuşu ile kapatma
         this.addDialogCloseActionListener(e -> this.close());
+        this.setCloseOnOutsideClick(true);
     }
 
     public RightDrawer(String title) {
@@ -86,7 +85,8 @@ public class RightDrawer extends Dialog {
         contentArea.add(components);
     }
 
-    public void addContent(Component... components) {
+    @Override
+    public void add(Component... components) {
         contentArea.add(components);
     }
 
@@ -94,15 +94,18 @@ public class RightDrawer extends Dialog {
         contentArea.removeAll();
     }
 
-    public void openDrawer() {
-        this.open();
+    @Override
+    public void open() {
+        super.open();
     }
 
-    public void closeDrawer() {
-        this.close();
+    @Override
+    public void close() {
+        super.close();
     }
 
-    public boolean isDrawerOpen() {
-        return this.isOpened();
+    @Override
+    public boolean isOpened() {
+        return super.isOpened();
     }
 }
