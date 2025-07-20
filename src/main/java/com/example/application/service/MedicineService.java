@@ -1,6 +1,7 @@
 package com.example.application.service;
 
 import com.example.application.domain.Unit;
+import com.example.application.dto.IMedicineResult;
 import com.example.application.repository.IUnitRepository;
 import com.example.application.domain.Medicine;
 import com.example.application.repository.IMedicineRepository;
@@ -33,18 +34,26 @@ public class MedicineService implements IMedicineService {
 
     @Override
     public Medicine save(Medicine medicine) {
-        if (medicine.getUnit() != null && medicine.getUnit().getUnitId() != null) {
-            Unit unit = unitRepository.findById(medicine.getUnit().getUnitId())
-                    .orElseThrow(() -> new IllegalArgumentException("Unit not found"));
-            medicine.setUnit(unit);
-        } else {
-            throw new IllegalArgumentException("Unit is required for Medicine");
-        }
+        Unit unit = unitRepository.findById(medicine.getUnit().getUnitId())
+                .orElseThrow(() -> new IllegalArgumentException("Unit not found"));
+        medicine.setUnit(unit);
         return medicineRepository.save(medicine);
+    }
+
+    @Override
+    public Medicine saveIfNotExists(Medicine medicine) {
+        Optional<Medicine> existingMedicine = medicineRepository.findByName(medicine.getName());
+        existingMedicine.ifPresent(value -> medicine.setMedicineId(value.getMedicineId()));
+        return save(medicine);
     }
 
     @Override
     public void deleteById(Long id) {
         medicineRepository.deleteById(id);
+    }
+
+    @Override
+    public List<IMedicineResult> findAllMedicines() {
+        return medicineRepository.findAllMedicines();
     }
 }

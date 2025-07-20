@@ -45,3 +45,15 @@ Bildirim ana sayfada alt alta tam halde bildirim çubuğu olarak navbarda gözü
 İlaç ve birim ekleyi soldan açılır pencere şeklinde ekle.
 
 Yapay zekayı daha az kullanalım. Özellikle dialog kısmı için.
+
+Medicine name için subreport oluştur. İlacın verildiği tarihi header olarak ekle
+Checkbox ekle ve doktor onayı olarak koy.
+Subreportta tablo ekle.
+İlaçlar için view ekle ve içerisindeki butonda ekleme için right drawerları aç.
+Flex layout üzerine eklema
+Hastalar için bilgi kartı
+Hasta detayları için bir view ekle.(Hastanın bilgileri
+Filtreleme kımsı için sütün sütün ayır. Sabit bir şekilde olsun.
+Notificationları kart olarak göster.
+Querry sorgularını jpa querry olarak yaz.
+Layoutları resimlerdeki gibi yap.

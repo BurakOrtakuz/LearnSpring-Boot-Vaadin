@@ -1,11 +1,15 @@
 package com.example.application.base.ui.layout;
 
+import com.example.application.base.ui.component.MedicineDrawer;
 import com.example.application.base.ui.component.RightDrawer;
 import com.example.application.base.ui.view.Doctor.DoctorAppointmentsView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
 import com.example.application.base.ui.view.HomeView;
+import com.example.application.base.ui.view.MedicineView;
 import com.example.application.domain.Medicine;
 import com.example.application.domain.Unit;
+import com.example.application.service.IMedicineService;
+import com.example.application.service.IUnitService;
 import com.example.application.service.MedicineService;
 import com.example.application.service.UnitService;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -20,12 +24,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.RouterLink;
 
 public class DoctorAppLayout extends AppLayout {
-    private final UnitService unitService;
-    private final MedicineService medicineService;
-    private RightDrawer unitDrawer;
-    private RightDrawer medicineDrawer;
+    private final IUnitService unitService;
+    private final IMedicineService medicineService;
+    private final RightDrawer unitDrawer;
+    private final RightDrawer medicineDrawer;
 
-    public DoctorAppLayout(UnitService unitService, MedicineService medicineService, UnitService unitService1, MedicineService medicineService1) {
+    public DoctorAppLayout(IUnitService unitService, IMedicineService medicineService, UnitService unitService1, MedicineService medicineService1) {
         this.unitService = unitService1;
         this.medicineService = medicineService1;
         VerticalLayout drawerLayout = new VerticalLayout();
@@ -36,7 +40,7 @@ public class DoctorAppLayout extends AppLayout {
         drawerLayout.setHeightFull();
 
         unitDrawer = createUnitDrawer();
-        medicineDrawer = createMedicineDrawer();
+        medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService, unitService);
 
         H1 logoText = new H1("ASCHENTE");
         logoText.setClassName("doctor-logo");
@@ -49,12 +53,8 @@ public class DoctorAppLayout extends AppLayout {
         RouterLink appointments = new RouterLink("Randevular", DoctorAppointmentsView.class);
         appointments.setClassName("doctor-link");
 
-        Button addMedicine = new Button("İlaç Ekle");
-        addMedicine.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        addMedicine.addClassName("doctor-link");
-        addMedicine.addClickListener(e -> {
-            medicineDrawer.open();
-        });
+        RouterLink medicine = new RouterLink("İlaçlar", MedicineView.class);
+        medicine.setClassName("doctor-link");
 
         Button addUnit = new Button("Birim Ekle");
         addUnit.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
@@ -68,7 +68,7 @@ public class DoctorAppLayout extends AppLayout {
             getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
         });
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerLayout.add(logoLink, home, appointments, addMedicine, addUnit, logout);
+        drawerLayout.add(logoLink, home, appointments, medicine, addUnit, logout);
         addToDrawer(drawerLayout);
     }
 
@@ -97,44 +97,6 @@ public class DoctorAppLayout extends AppLayout {
         VerticalLayout layout = new VerticalLayout();
         layout.setClassName("doctor-unit-drawer-content");
         layout.add(unitNameField, saveButton);
-
-        drawer.setContent(layout);
-        return drawer;
-    }
-
-    private RightDrawer createMedicineDrawer() {
-        RightDrawer drawer = new RightDrawer();
-
-        drawer.setTitle("İlaç Ekle");
-
-        TextField medicineNameField = new TextField("İlaç Adı");
-        medicineNameField.setPlaceholder("İlaç adı giriniz");
-
-        ComboBox<Unit> unitComboBox = new ComboBox<>();
-        unitComboBox.setPlaceholder("Birim giriniz");
-        unitComboBox.setItems(unitService.findAll());
-        unitComboBox.setItemLabelGenerator(Unit::getName);
-
-        Button saveButton = new Button("İlaç Ekle");
-        saveButton.addClickListener(e -> {
-            String medicineName = medicineNameField.getValue();
-            Unit unit = unitComboBox.getValue();
-            if (medicineName == null || medicineName.isBlank() || unit == null) {
-                Notification.show("İlaç adı ve birim zorunludur!", 3000, Notification.Position.MIDDLE);
-                return;
-            }
-            Medicine medicine = new Medicine();
-            medicine.setName(medicineName);
-            medicine.setUnit(unit);
-            medicineService.save(medicine);
-            Notification.show("İlaç başarıyla eklendi!", 3000, Notification.Position.TOP_CENTER);
-            medicineNameField.clear();
-            unitComboBox.clear();
-        });
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setClassName("doctor-medicine-drawer-content");
-        layout.add(medicineNameField, unitComboBox, saveButton);
 
         drawer.setContent(layout);
         return drawer;

@@ -7,6 +7,7 @@ import com.example.application.domain.Patient;
 import com.example.application.domain.Person;
 import com.example.application.service.DoctorService;
 import com.example.application.service.ExaminationService;
+import com.example.application.service.NotificationService;
 import com.example.application.service.PatientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -33,11 +34,13 @@ public class NewAppointmentsView extends VerticalLayout {
     private final DoctorService doctorService;
     private final ExaminationService examinationService;
     private final PatientService patientService;
+    private final NotificationService notificationService;
 
-    public NewAppointmentsView(DoctorService doctorService, ExaminationService examinationService, PatientService patientService) {
+    public NewAppointmentsView(DoctorService doctorService, ExaminationService examinationService, PatientService patientService, NotificationService notificationService) {
         this.doctorService = doctorService;
         this.examinationService = examinationService;
         this.patientService = patientService;
+        this.notificationService = notificationService;
 
         setSpacing(true);
         setPadding(true);
@@ -95,6 +98,11 @@ public class NewAppointmentsView extends VerticalLayout {
                         examination.setComplaint(complaint);
                         examination.setDate(java.sql.Timestamp.valueOf(selectedDate.atTime(selectedTime)));
                         examinationService.save(examination);
+
+                        Date appointmentDate = java.sql.Timestamp.valueOf(selectedDate.atTime(selectedTime));
+                        notificationService.sendAppointmentNotificationToPatient(person, selectedDoctor, appointmentDate);
+                        notificationService.sendAppointmentNotificationToDoctor(selectedDoctor, person, appointmentDate);
+
                         Notification.show("Randevunuz başarıyla oluşturuldu!", 3000, Notification.Position.TOP_CENTER);
                         doctorComboBox.clear();
                         datePicker.clear();
