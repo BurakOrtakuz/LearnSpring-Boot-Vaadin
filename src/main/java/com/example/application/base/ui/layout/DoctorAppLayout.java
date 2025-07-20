@@ -6,27 +6,19 @@ import com.example.application.base.ui.view.Doctor.DoctorAppointmentsView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
 import com.example.application.base.ui.view.HomeView;
 import com.example.application.base.ui.view.MedicineView;
-import com.example.application.domain.Medicine;
-import com.example.application.domain.Unit;
 import com.example.application.service.IMedicineService;
 import com.example.application.service.IUnitService;
 import com.example.application.service.MedicineService;
 import com.example.application.service.UnitService;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.RouterLink;
 
 public class DoctorAppLayout extends AppLayout {
     private final IUnitService unitService;
     private final IMedicineService medicineService;
-    private final RightDrawer unitDrawer;
     private final RightDrawer medicineDrawer;
 
     public DoctorAppLayout(IUnitService unitService, IMedicineService medicineService, UnitService unitService1, MedicineService medicineService1) {
@@ -39,7 +31,6 @@ public class DoctorAppLayout extends AppLayout {
         drawerLayout.setWidthFull();
         drawerLayout.setHeightFull();
 
-        unitDrawer = createUnitDrawer();
         medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService, unitService);
 
         H1 logoText = new H1("ASCHENTE");
@@ -56,49 +47,13 @@ public class DoctorAppLayout extends AppLayout {
         RouterLink medicine = new RouterLink("İlaçlar", MedicineView.class);
         medicine.setClassName("doctor-link");
 
-        Button addUnit = new Button("Birim Ekle");
-        addUnit.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        addUnit.addClassName("doctor-link");
-        addUnit.addClickListener(e -> {
-            unitDrawer.open();
-        });
         RouterLink logout = new RouterLink("Çıkış yap", HomeView.class);
         logout.setClassName("doctor-link");
         logout.getElement().addEventListener("click", e -> {
             getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
         });
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        drawerLayout.add(logoLink, home, appointments, medicine, addUnit, logout);
+        drawerLayout.add(logoLink, home, appointments, medicine, logout);
         addToDrawer(drawerLayout);
-    }
-
-    private RightDrawer createUnitDrawer() {
-        RightDrawer drawer = new RightDrawer();
-
-        drawer.setTitle("Birim Ekle");
-
-        TextField unitNameField = new TextField("Birim Adı");
-        unitNameField.setPlaceholder("Birim adı giriniz");
-
-        Button saveButton = new Button("Birim Ekle");
-        saveButton.addClickListener(e -> {
-            String unitName = unitNameField.getValue();
-            if (unitName == null || unitName.isBlank()) {
-                unitNameField.setHelperText("Bu alan zorunludur!");
-                return;
-            }
-            Unit unit = new Unit();
-            unit.setName(unitName);
-            unitService.save(unit);
-            Notification.show("Birim başarıyla eklendi!", 3000, Notification.Position.TOP_CENTER);
-            unitNameField.clear();
-        });
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setClassName("doctor-unit-drawer-content");
-        layout.add(unitNameField, saveButton);
-
-        drawer.setContent(layout);
-        return drawer;
     }
 }

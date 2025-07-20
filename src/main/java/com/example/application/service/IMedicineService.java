@@ -13,5 +13,6 @@ public interface IMedicineService {
     void deleteById(Long id);
     List<IMedicineResult> findAllMedicines();
     Medicine saveIfNotExists(Medicine medicine);
+    List<IMedicineResult> filterMedicine(String name, String unit, String description);
 }
 

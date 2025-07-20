@@ -48,6 +48,11 @@ public class MedicineService implements IMedicineService {
     }
 
     @Override
+    public List<IMedicineResult> filterMedicine(String name, String unit, String description) {
+        return medicineRepository.filterMedicine(name, unit, description);
+    }
+
+    @Override
     public void deleteById(Long id) {
         medicineRepository.deleteById(id);
     }
