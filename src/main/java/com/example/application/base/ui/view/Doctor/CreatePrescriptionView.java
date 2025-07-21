@@ -6,6 +6,7 @@ import com.example.application.domain.Medicine;
 import com.example.application.domain.Prescription;
 import com.example.application.domain.PrescriptionMedicine;
 import com.example.application.service.ExaminationService;
+import com.example.application.service.IPrescriptionMedicineService;
 import com.example.application.service.MedicineService;
 import com.example.application.service.PrescriptionService;
 import com.vaadin.flow.component.button.Button;
@@ -31,12 +32,14 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
     private final CreatePdf createPdf;
     private final MedicineService medicineService;
     private Examination examination;
+    private final IPrescriptionMedicineService prescriptionMedicineService;
 
-    public CreatePrescriptionView(PrescriptionService prescriptionService, ExaminationService examinationService, CreatePdf createPdf, MedicineService medicineService) {
+    public CreatePrescriptionView(PrescriptionService prescriptionService, ExaminationService examinationService, CreatePdf createPdf, MedicineService medicineService, IPrescriptionMedicineService prescriptionMedicineService) {
         this.prescriptionService = prescriptionService;
         this.examinationService = examinationService;
         this.createPdf = createPdf;
         this.medicineService = medicineService;
+        this.prescriptionMedicineService = prescriptionMedicineService;
         setSpacing(true);
         setPadding(true);
         setWidthFull();
@@ -100,6 +103,16 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                 prescription.setDoctor(examination.getDoctor());
                 prescription.setPatient(examination.getPatient());
                 prescription.setMedicines(selectedMedicines);
+
+                // Prescription'ı önce kaydet
+                Prescription savedPrescription = prescriptionService.save(prescription);
+
+                // PrescriptionMedicine nesnelerine prescription'ı set et ve kaydet
+                for(PrescriptionMedicine pm : selectedMedicines) {
+                    pm.setPrescription(savedPrescription);
+                    prescriptionMedicineService.save(pm);
+                }
+
                 com.example.application.Jaster.Prescription jasperPrescription = new com.example.application.Jaster.Prescription(
                         examination.getPatient().getPerson().getFirstName() + " " + examination.getPatient().getPerson().getLastName(),
                         examination.getDate(),
@@ -107,9 +120,12 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                         examination.getDoctor().getPerson().getFirstName() + " " + examination.getDoctor().getPerson().getLastName(),
                         prescriptionArea.getValue()
                 );
+
                 byte[] pdfBytes = createPdf.generatePdf(jasperPrescription, selectedMedicines);
-                prescription.setDocument(pdfBytes);
-                prescriptionService.save(prescription);
+
+                savedPrescription.setDocument(pdfBytes);
+                prescriptionService.save(savedPrescription);
+
                 Notification.show("Reçete PDF ve ilaçlar ile kaydedildi!", 3000, Notification.Position.TOP_CENTER);
                 prescriptionArea.clear();
                 selectedMedicines.clear();

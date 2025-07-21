@@ -6,7 +6,6 @@ import com.example.application.domain.Patient;
 import com.example.application.domain.Role;
 import com.example.application.repository.IPatientRepository;
 import com.example.application.repository.IPersonRepository;
-
 import com.example.application.repository.IRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

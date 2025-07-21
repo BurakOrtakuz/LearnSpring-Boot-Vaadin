@@ -4,28 +4,23 @@ import com.example.application.base.ui.layout.DoctorAppLayout;
 import com.example.application.domain.Notification;
 import com.example.application.domain.Person;
 import com.example.application.service.NotificationService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "/doctor", layout = DoctorAppLayout.class)
 @RolesAllowed("DOCTOR")
 public class DoctorView extends VerticalLayout {
     private final NotificationService notificationService;
-    private Grid<Notification> notificationGrid;
 
     public DoctorView(NotificationService notificationService) {
         this.notificationService = notificationService;
@@ -39,72 +34,63 @@ public class DoctorView extends VerticalLayout {
 
         // Bildirimler bölümü
         H3 notificationsTitle = new H3("Bildirimlerim");
-        add(notificationsTitle);
-
-        createNotificationGrid();
-        loadNotifications();
-
-        add(notificationGrid);
+        add(notificationsTitle, notificationLayout());
     }
 
-    private void createNotificationGrid() {
-        notificationGrid = new Grid<>(Notification.class, false);
-        notificationGrid.setWidthFull();
-        notificationGrid.setHeight("400px");
+    private VerticalLayout notificationLayout()
+    {
+        VerticalLayout notificationLayout = new VerticalLayout();
 
-        notificationGrid.addColumn(notification -> notification.getTitle())
-                .setHeader("Başlık")
-                .setAutoWidth(true)
-                .setFlexGrow(1);
+        List <Notification> notifications = loadNotifications();
 
-        notificationGrid.addColumn(notification -> notification.getMessage())
-                .setHeader("Mesaj")
-                .setAutoWidth(true)
-                .setFlexGrow(2);
-
-        notificationGrid.addColumn(notification -> {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            return formatter.format(notification.getTimestamp());
-        })
-                .setHeader("Tarih")
-                .setAutoWidth(true);
-
-        notificationGrid.addColumn(notification -> notification.getReadStatus() ? "Okundu" : "Okunmadı")
-                .setHeader("Durum")
-                .setAutoWidth(true);
-
-        notificationGrid.addColumn(new ComponentRenderer<>(notification -> {
-            HorizontalLayout actions = new HorizontalLayout();
-
-            if (!notification.getReadStatus()) {
-                Button markAsReadBtn = new Button("Okundu İşaretle", new Icon(VaadinIcon.CHECK));
-                markAsReadBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
-                markAsReadBtn.addClickListener(e -> {
-                    notificationService.markAsRead(notification.getId());
-                    loadNotifications(); // Tabloyu yenile
-                    com.vaadin.flow.component.notification.Notification.show("Bildirim okundu olarak işaretlendi", 2000, com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER);
-                });
-                actions.add(markAsReadBtn);
-            }
-
-            Button deleteBtn = new Button("Sil", new Icon(VaadinIcon.TRASH));
-            deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_SMALL);
-            deleteBtn.addClickListener(e -> {
-                notificationService.deleteNotification(notification.getId());
-                loadNotifications(); // Tabloyu yenile
-                com.vaadin.flow.component.notification.Notification.show("Bildirim silindi", 2000, com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER);
-            });
-            actions.add(deleteBtn);
-
-            return actions;
-        })).setHeader("İşlemler").setAutoWidth(true);
+        for (Notification notification : notifications)
+        {
+            VerticalLayout notificationCard = createNotificationCard(notification);
+            notificationLayout.add(notificationCard);
+        }
+        return notificationLayout;
     }
 
-    private void loadNotifications() {
+    private VerticalLayout createNotificationCard(Notification notification) {
+        VerticalLayout notificationCard = new VerticalLayout();
+        notificationCard.setWidthFull();
+        notificationCard.setPadding(true);
+        notificationCard.setSpacing(true);
+        notificationCard.setClassName("notification-card");
+
+        if(notification.getReadStatus())
+            notificationCard.getStyle().set("background-color", "#f5f5f5");
+        else
+            notificationCard.getStyle().set("background-color", "#e0f7fa");
+
+        notificationCard.addClickListener(event -> {
+            notificationService.markAsRead(notification.getId());
+            notificationCard.getStyle().set("background-color", "#f5f5f5");
+        });
+
+        H3 title = new H3(notification.getTitle());
+        title.getStyle().set("margin", "0");
+
+        Span description = new Span(notification.getMessage());
+        description.getStyle().set("margin", "0");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        Span date = new Span(dateFormat.format(notification.getTimestamp()));
+
+        VerticalLayout content = new VerticalLayout();
+        content.add(title, description, date);
+
+        notificationCard.add(title, content);
+
+        return notificationCard;
+    }
+    private List<Notification> loadNotifications() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof Person person) {
-            List<Notification> notifications = notificationService.getNotificationsByPersonId(person.getId());
-            notificationGrid.setItems(notifications);
+            List<Notification> notifications = new ArrayList<>(notificationService.getNotificationsByPersonId(person.getId()));
+            notifications.sort((n1, n2) -> n2.getTimestamp().compareTo(n1.getTimestamp()));
+            return notifications;
         }
+        return new ArrayList<>();
     }
 }

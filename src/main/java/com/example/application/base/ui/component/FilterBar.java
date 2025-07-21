@@ -44,7 +44,7 @@ public class FilterBar extends SplitLayout {
         {
             if(!filterBar.isVisible())
                 filterBar.setVisible(true);
-            else if (getSplitterPosition() < 200) {
+            else if (getSplitterPosition() <= 200) {
                 filterBar.setVisible(false);
             }
         });

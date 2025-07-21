@@ -5,6 +5,11 @@ public class Medicine {
     private String medicineDescription;
     private String doctorDescription;
 
+    public Medicine(String medicineName, String medicineDescription) {
+        this.medicineName = medicineName;
+        this.medicineDescription = medicineDescription;
+    }
+
     public Medicine(String medicineName, String medicineDescription, String doctorDescription) {
         this.medicineName = medicineName;
         this.medicineDescription = medicineDescription;

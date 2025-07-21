@@ -46,15 +46,13 @@ Bildirim ana sayfada alt alta tam halde bildirim çubuğu olarak navbarda gözü
 
 Yapay zekayı daha az kullanalım. Özellikle dialog kısmı için.
 
-Medicine name için subreport oluştur. İlacın verildiği tarihi header olarak ekle
-Checkbox ekle ve doktor onayı olarak koy.
-Subreportta tablo ekle.
+Medicine name için subreport oluştur. İlacın verildiği tarihi header olarak ekle ve+
+Checkbox ekle ve doktor onayı olarak koy. Subreportta tablo ekle.+
 İlaçlar için view ekle ve içerisindeki butonda ekleme için right drawerları aç.+
 Split layout üzerine eklema+
 Hastalar için bilgi kartı
 Hasta detayları için bir view ekle.(Hastanın bilgileri)
 Filtreleme kımsı için sütün sütün ayır. Sabit bir şekilde olsun.+
 Querry sorgularını jpa querry olarak yaz.+
-
 Layoutları resimlerdeki gibi yap.
-Notificationları kart olarak göster.
+Notificationları kart olarak göster.+

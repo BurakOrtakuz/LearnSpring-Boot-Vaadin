@@ -3,6 +3,7 @@
 @import "docktorSideBar.css";
 @import "genericTable.css";
 @import "rightDrawer.css";
+@import "notificationCard.css";
 
 vaadin-login-form {
     --lumo-font-size-m: 1.2rem;
