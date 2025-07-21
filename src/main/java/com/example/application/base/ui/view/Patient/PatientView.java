@@ -2,84 +2,152 @@ package com.example.application.base.ui.view.Patient;
 
 import com.example.application.base.ui.layout.PatientMainLayout;
 import com.example.application.domain.Person;
-import com.example.application.dto.IPatientExaminationSearchResult;
-import com.vaadin.flow.component.Text;
+import com.example.application.service.IPatientService;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.example.application.base.ui.component.table.ColumnConfig;
-import com.example.application.base.ui.component.table.GenericTable;
-import com.example.application.service.ExaminationService;
-import com.example.application.service.PatientService;
-import com.vaadin.flow.component.html.Anchor;
-
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Route(value = "/patient", layout = PatientMainLayout.class)
 @RolesAllowed("PATIENT")
 public class PatientView extends VerticalLayout {
 
-    private ExaminationService examinationService;
-    private PatientService patientService;
+    private final IPatientService patientService;
 
-    private List<IPatientExaminationSearchResult> examinations;
-    public PatientView(ExaminationService examinationService, PatientService patientService) {
-        this.examinationService = examinationService;
+    public PatientView(IPatientService patientService) {
         this.patientService = patientService;
-        examinations = null;
-        System.out.println("PatientView initialized");
+
         setSpacing(true);
         setPadding(true);
+        setWidthFull();
 
-        // Giriş yapan kullanıcıyı al
+        // Sayfa başlığı
+        add(new com.vaadin.flow.component.html.H2("Kişisel Bilgilerim"));
+
+        // Bilgi panelleri
+        add(patientInformation(), communicationInformation());
+    }
+
+    private Details communicationInformation() {
+        Details details = new Details();
+        Person currentPatient = getCurrentUser();
+
+        if (currentPatient == null) {
+            details.setSummary(new Span("İletişim Bilgileri"));
+            details.add(new Span("Kullanıcı bilgileri yüklenemedi."));
+            return details;
+        }
+
+        HorizontalLayout summary = new HorizontalLayout();
+        summary.setWidthFull();
+        summary.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span header = new Span("İletişim Bilgileri");
+        summary.add(header);
+
+        VerticalLayout content = new VerticalLayout();
+        content.addClassName("communication-details");
+        content.setWidthFull();
+        content.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        HorizontalLayout row1 = new HorizontalLayout();
+
+        VerticalLayout emailField = newRowItem("E-posta", currentPatient.getEmail());
+        VerticalLayout phoneField = newRowItem("Telefon", currentPatient.getPhoneNumber());
+
+        row1.add(emailField, phoneField);
+        content.add(row1);
+
+        details.setSummary(header);
+        details.add(content);
+        return details;
+    }
+
+    private Details patientInformation() {
+        Details details = new Details();
+        Person currentPatient = getCurrentUser();
+
+        if (currentPatient == null) {
+            details.setSummary(new Span("Hasta Bilgileri"));
+            details.add(new Span("Kullanıcı bilgileri yüklenemedi."));
+            return details;
+        }
+
+        HorizontalLayout summary = new HorizontalLayout();
+        summary.setWidthFull();
+        summary.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        details.setOpened(true);
+        Span header = new Span("Hasta Bilgileri");
+        summary.add(header);
+
+        VerticalLayout content = new VerticalLayout();
+        content.addClassName("patient-details");
+        content.setWidthFull();
+        content.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        HorizontalLayout row1 = new HorizontalLayout();
+        row1.setWidthFull();
+        row1.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        VerticalLayout name = newRowItem("Adı Soyadı", currentPatient.getFirstName() + " " + currentPatient.getLastName());
+        VerticalLayout gender = newRowItem("Cinsiyet", currentPatient.getGender());
+        VerticalLayout birthDate = newRowItem("Doğum Tarihi", formatBirthDate(currentPatient.getBirthDate()));
+
+        HorizontalLayout row2 = new HorizontalLayout();
+        row2.setWidthFull();
+        row2.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        VerticalLayout address = newRowItem("Adres", currentPatient.getAddress());
+        VerticalLayout phone = newRowItem("Telefon", currentPatient.getPhoneNumber());
+        VerticalLayout email = newRowItem("E-posta", currentPatient.getEmail());
+
+        row1.add(name, gender, birthDate);
+        row2.add(address, phone, email);
+
+        content.add(row1, row2);
+
+        details.setSummary(header);
+        details.add(content);
+        return details;
+    }
+
+    private String formatBirthDate(LocalDate birthDate) {
+        if (birthDate == null) {
+            return "-";
+        }
+        return birthDate.toString();
+    }
+
+    private VerticalLayout newRowItem(String label, String value) {
+        if (value == null)
+            value = "-";
+        if (label == null)
+            label = "-";
+
+        VerticalLayout row = new VerticalLayout();
+        row.setPadding(false);
+        row.setSpacing(false);
+
+        TextField textField = new TextField(label);
+        textField.setValue(value);
+        textField.setReadOnly(true);
+        textField.setWidthFull();
+
+        row.add(textField);
+        return row;
+    }
+
+    private Person getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof Person person) {
-            TextField searchField = new TextField();
-            searchField.setWidth("50%");
-            searchField.setPlaceholder("Search");
-            searchField.setPrefixComponent(new Icon(VaadinIcon.SEARCH));
-            searchField.setValueChangeMode(ValueChangeMode.EAGER);
-
-            // Tabloyu dışarıda tanımla ki listener içinde erişebilelim
-            List<ColumnConfig<IPatientExaminationSearchResult, ?>> columns = List.of(
-                    new ColumnConfig<>("Tarih", e -> e.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), true),
-                    new ColumnConfig<>("Doktor", IPatientExaminationSearchResult::getDoctorName,true),
-                    new ColumnConfig<>("Şikayet", IPatientExaminationSearchResult::getComplaint,true),
-                    new ColumnConfig<>("Reçete", e -> {
-                        if (e.getPrescriptionId() != -1) {
-                            Anchor pdfLink = new Anchor("/api/prescription/pdf/" + e.getPrescriptionId(), "Reçete Görüntüle");
-                            pdfLink.setTarget("_blank");
-                            return pdfLink;
-                        } else {
-                            return new Span("-");
-                        }
-                    },false,true)
-            );
-            GenericTable<IPatientExaminationSearchResult> table = new GenericTable<>(columns, new ArrayList<>());
-            add(searchField, table);
-
-            patientService.findById(person.getId()).ifPresent(patient -> {
-                // İlk yüklemede boş arama ile doldur
-                List<IPatientExaminationSearchResult> examinations = examinationService.patientSearch("");
-                System.out.println(examinations);
-                table.setItems(examinations);
-            });
-
-            searchField.addValueChangeListener(e -> {
-                String query = searchField.getValue();
-                List<IPatientExaminationSearchResult> filtered = examinationService.patientSearch(query);
-                table.setItems(filtered);
-            });
-        } else {
-            add(new Text("Kullanıcı bilgileri alınamadı."));
+            return person;
         }
+        return null;
     }
 }
