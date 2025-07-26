@@ -1,6 +1,7 @@
 package com.example.application.service;
 
 import com.example.application.domain.PrescriptionMedicine;
+import com.example.application.dto.IPrescriptionMedicineByPersonResult;
 import com.example.application.repository.IPrescriptionMedicineRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,11 @@ public class PrescriptionMedicineService implements IPrescriptionMedicineService
     @Override
     public List<PrescriptionMedicine> findAll() {
         return prescriptionMedicineRepository.findAll();
+    }
+
+    @Override
+    public List<IPrescriptionMedicineByPersonResult> findByPrescription_Person_PersonId(Long personId) {
+        return prescriptionMedicineRepository.findByPrescription_Person_PersonId(personId);
     }
 
     @Override

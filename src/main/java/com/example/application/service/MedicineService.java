@@ -1,8 +1,6 @@
 package com.example.application.service;
 
-import com.example.application.domain.Unit;
 import com.example.application.dto.IMedicineResult;
-import com.example.application.repository.IUnitRepository;
 import com.example.application.domain.Medicine;
 import com.example.application.repository.IMedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,10 @@ import java.util.Optional;
 @Service
 public class MedicineService implements IMedicineService {
     private final IMedicineRepository medicineRepository;
-    private final IUnitRepository unitRepository;
 
     @Autowired
-    public MedicineService(IMedicineRepository medicineRepository, IUnitRepository unitRepository) {
+    public MedicineService(IMedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
-        this.unitRepository = unitRepository;
     }
 
     @Override
@@ -34,9 +30,6 @@ public class MedicineService implements IMedicineService {
 
     @Override
     public Medicine save(Medicine medicine) {
-        Unit unit = unitRepository.findById(medicine.getUnit().getUnitId())
-                .orElseThrow(() -> new IllegalArgumentException("Unit not found"));
-        medicine.setUnit(unit);
         return medicineRepository.save(medicine);
     }
 

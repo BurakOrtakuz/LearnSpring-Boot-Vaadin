@@ -37,6 +37,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
                 e.date as date,
                 concat(p.first_name,' ',p.last_name) as patientName,
                 e.complaint as complaint,
+                p.person_id as patientId,
                 CASE
                     WHEN pr.document IS NULL THEN -1
                     ELSE pr.prescription_id

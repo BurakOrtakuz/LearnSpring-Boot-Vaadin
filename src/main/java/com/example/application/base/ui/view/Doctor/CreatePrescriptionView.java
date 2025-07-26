@@ -11,6 +11,7 @@ import com.example.application.service.MedicineService;
 import com.example.application.service.PrescriptionService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
@@ -21,7 +22,10 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Route(value = "/doctor/prescription/create", layout = com.example.application.base.ui.layout.DoctorAppLayout.class)
@@ -62,6 +66,10 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
         ComboBox<Medicine> medicineComboBox = new ComboBox<>("İlaç Seçiniz");
         medicineComboBox.setItems(allMedicines);
         medicineComboBox.setItemLabelGenerator(Medicine::getName);
+
+        DatePicker datePicker = new DatePicker("İlaçın bitiş tarihi");
+
+
         TextArea medDescArea = new TextArea("Açıklama (doz, kullanım vs.)");
         medDescArea.setWidthFull();
         Button addMedicineButton = new Button("Listeye Ekle");
@@ -90,10 +98,17 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                 PrescriptionMedicine pm = new PrescriptionMedicine();
                 pm.setMedicine(selected);
                 pm.setDescription(medDesc);
+                LocalDate localDate = LocalDate.now();
+                Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                pm.setTimestamp(date);
+                LocalDate finishLocalDate = datePicker.getValue();
+                Date finishDate = Date.from(finishLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                pm.setFinishTime(finishDate);
                 selectedMedicines.add(pm);
                 medicineGrid.getDataProvider().refreshAll();
                 medicineComboBox.clear();
                 medDescArea.clear();
+                datePicker.clear();
             }
         });
         saveButton.addClickListener(e -> {
@@ -134,6 +149,6 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                 Notification.show("Hata: " + ex.getMessage(), 5000, Notification.Position.TOP_CENTER);
             }
         });
-        add(prescriptionArea, medicineComboBox, medDescArea, addMedicineButton, medicineGrid, saveButton);
+        add(prescriptionArea, medicineComboBox,datePicker, medDescArea, addMedicineButton, medicineGrid, saveButton);
     }
 }

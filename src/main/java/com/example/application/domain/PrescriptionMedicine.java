@@ -3,6 +3,8 @@ package com.example.application.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "prescription_medicine")
 @Data
@@ -24,4 +26,10 @@ public class PrescriptionMedicine {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "timestamp")
+    private Date timestamp;
+
+    @Column(name = "finish_time")
+    private Date finishTime;
 }

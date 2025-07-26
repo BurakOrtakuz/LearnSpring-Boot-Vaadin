@@ -2,14 +2,11 @@ package com.example.application.base.ui.view;
 
 import com.example.application.base.ui.component.FilterBar;
 import com.example.application.base.ui.component.MedicineDrawer;
-import com.example.application.base.ui.component.RightDrawer;
 import com.example.application.base.ui.component.table.ColumnConfig;
 import com.example.application.base.ui.component.table.GenericTable;
 import com.example.application.base.ui.layout.DoctorAppLayout;
-import com.example.application.domain.Unit;
 import com.example.application.dto.IMedicineResult;
 import com.example.application.service.IMedicineService;
-import com.example.application.service.IUnitService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,16 +24,13 @@ public class MedicineView extends VerticalLayout {
     private final IMedicineService medicineService;
     private final MedicineDrawer medicineDrawer;
     private final GenericTable<IMedicineResult> table;
-    private final RightDrawer unitDrawer;
-    private final IUnitService unitService;
 
-    public MedicineView(IMedicineService medicineService, IUnitService unitService1) {
+    public MedicineView(IMedicineService medicineService) {
         this.medicineService = medicineService;
-        this.unitService = unitService1;
-        this.medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService, unitService);
+        this.medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService);
 
         table = medicineTable();
-        unitDrawer = createUnitDrawer();
+
         // 🔹 Filter Bar ve filtre bileşenleri
         TextField nameFilter = new TextField("İsim");
         TextField unitFilter = new TextField("Birim");
@@ -50,8 +44,8 @@ public class MedicineView extends VerticalLayout {
 
         filterBar.setReloadCallback(() -> {
             Map<String, Object> filters = filterBar.getFilterValues();
-            String name = ((String) filters.getOrDefault("name", "")).toLowerCase();
-            String unit = ((String) filters.getOrDefault("unit", "")).toLowerCase();
+            String name = ((String) filters.getOrDefault("name", ""));
+            String unit = ((String) filters.getOrDefault("unit", ""));
             String description = (String) filters.getOrDefault("description", "");
             List<IMedicineResult> filtered = medicineService.filterMedicine(name, unit, description);
             table.setItems(filtered);
@@ -62,45 +56,15 @@ public class MedicineView extends VerticalLayout {
         buttonLayout.setWidthFull();
         buttonLayout.setSpacing(true);
         buttonLayout.setPadding(true);
-        buttonLayout.add(addMedicineButton(), addUnitButton());
+        buttonLayout.add(addMedicineButton());
 
         add(buttonLayout, filterBar);
-    }
-
-    private RightDrawer createUnitDrawer() {
-        RightDrawer drawer = new RightDrawer();
-
-        drawer.setTitle("Birim Ekle");
-
-        TextField unitNameField = new TextField("Birim Adı");
-        unitNameField.setPlaceholder("Birim adı giriniz");
-
-        Button saveButton = new Button("Birim Ekle");
-        saveButton.addClickListener(e -> {
-            String unitName = unitNameField.getValue();
-            if (unitName == null || unitName.isBlank()) {
-                unitNameField.setHelperText("Bu alan zorunludur!");
-                return;
-            }
-            Unit unit = new Unit();
-            unit.setName(unitName);
-            unitService.save(unit);
-            Notification.show("Birim başarıyla eklendi!", 3000, Notification.Position.TOP_CENTER);
-            unitNameField.clear();
-        });
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.setClassName("doctor-unit-drawer-content");
-        layout.add(unitNameField, saveButton);
-
-        drawer.setContent(layout);
-        return drawer;
     }
 
     private GenericTable<IMedicineResult> medicineTable() {
         List<ColumnConfig<IMedicineResult, ?>> columns = List.of(
                 new ColumnConfig<>("İsim", IMedicineResult::getMedicineName, true),
-                new ColumnConfig<>("Birim", r -> r.getUnit().getName(), true),
+                new ColumnConfig<>("Birim", r -> r.getUnit().getDisplayName(), true),
                 new ColumnConfig<>("Açıklama", IMedicineResult::getDescription, true),
                 new ColumnConfig<>("İşlemler", r -> {
                     HorizontalLayout layout = new HorizontalLayout();
@@ -118,15 +82,7 @@ public class MedicineView extends VerticalLayout {
                 }, false,true)
         );
 
-        GenericTable<IMedicineResult> table = new GenericTable<>(columns , medicineService.findAllMedicines());
-        table.setAutoWidth(true);
-        table.addItemDoubleClickListener(event -> {
-            medicineDrawer.setItemsValue(event.getItem());
-            medicineDrawer.lockMedicineNameField();
-            medicineDrawer.open();
-        });
-
-        return table;
+        return new GenericTable<>(columns , medicineService.findAllMedicines());
     }
 
     private Button getDeleteButton(IMedicineResult r) {
@@ -134,27 +90,14 @@ public class MedicineView extends VerticalLayout {
         deleteButton.addClickListener(event -> {
             medicineService.deleteById(r.getMedicineId());
             table.setItems(medicineService.findAllMedicines());
-            Notification.show("İlaç silindi", 3000, Notification.Position.MIDDLE);
-            medicineDrawer.close();
-            medicineTable().setItems(medicineService.findAllMedicines());
+            Notification.show("İlaç başarıyla silindi!", 3000, Notification.Position.TOP_CENTER);
         });
         return deleteButton;
     }
 
     private Button addMedicineButton() {
-        Button addMedicineButton = new Button();
-        addMedicineButton.setText("İlaç Ekle");
-        addMedicineButton.addClickListener(event -> {
-            medicineDrawer.open();
-        });
+        Button addMedicineButton = new Button("İlaç Ekle");
+        addMedicineButton.addClickListener(e -> medicineDrawer.open());
         return addMedicineButton;
-    }
-
-    private Button addUnitButton() {
-        Button addUnitButton = new Button("Birim Ekle");
-        addUnitButton.addClickListener(event -> {
-            unitDrawer.open();
-        });
-        return addUnitButton;
     }
 }

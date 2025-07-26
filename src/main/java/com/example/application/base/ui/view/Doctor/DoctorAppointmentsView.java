@@ -8,6 +8,7 @@ import com.example.application.domain.Person;
 import com.example.application.dto.IDoctorExaminationSearchResult;
 import com.example.application.service.DoctorService;
 import com.example.application.service.ExaminationService;
+import com.example.application.service.PatientService;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -27,7 +28,11 @@ import java.util.List;
 @Route(value = "/doctor/appointments", layout = DoctorAppLayout.class)
 @RolesAllowed("DOCTOR")
 public class DoctorAppointmentsView extends VerticalLayout {
-    public DoctorAppointmentsView(DoctorService doctorService, ExaminationService examinationService) {
+    private final PatientService patientService;
+
+    public DoctorAppointmentsView(DoctorService doctorService, ExaminationService examinationService, PatientService patientService) {
+        this.patientService = patientService;
+        
         setSpacing(true);
         setPadding(true);
         setWidthFull();
@@ -66,6 +71,13 @@ public class DoctorAppointmentsView extends VerticalLayout {
         );
 
         GenericTable<IDoctorExaminationSearchResult> table = new GenericTable<>(columns, new ArrayList<>());
+        table.addItemDoubleClickListener(event -> {
+            IDoctorExaminationSearchResult examination = event.getItem();
+            if (examination != null) {
+                // Hasta detay sayfasına git
+                getUI().ifPresent(ui -> ui.navigate("doctor/patient-details/" + examination.getPatientId()));
+            }
+        });
         add(searchField,table);
 
         doctorService.findById(person.getId()).ifPresent(d -> {

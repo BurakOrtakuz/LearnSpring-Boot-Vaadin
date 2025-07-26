@@ -8,4 +8,5 @@ public interface IDoctorExaminationSearchResult {
     String getComplaint();
     int getPrescriptionId();
     int getExaminationId();
+    String getPatientId();
 }

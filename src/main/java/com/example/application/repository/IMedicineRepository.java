@@ -13,21 +13,20 @@ public interface IMedicineRepository extends JpaRepository<Medicine, Long> {
 
     @Query(value =
             """
-                Select m.medicineId as medicineId ,m.name as medicineName, u as unit, m.description as description
+                Select m.medicineId as medicineId, m.name as medicineName, m.unit as unit, m.description as description
                 from Medicine as m
-                join m.unit as u
             """)
     List<IMedicineResult> findAllMedicines();
 
     @Query(value =
             """
-                Select m.medicineId as medicineId ,m.name as medicineName, u as unit, m.description as description
+                Select m.medicineId as medicineId, m.name as medicineName, m.unit as unit, m.description as description
                 from Medicine as m
-                join m.unit as u
                 where m.name like %:name%
-                and u.name like %:unit%
+                and CAST(m.unit as string) like %:unit%
                 and m.description like %:description%
             """)
     List<IMedicineResult> filterMedicine(@Param("name") String name,@Param("unit") String unit, @Param("description") String description);
+
     Optional<Medicine> findByName(String name);
 }

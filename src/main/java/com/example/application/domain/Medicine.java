@@ -17,8 +17,8 @@ public class Medicine {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "unit_id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "unit_type")
     private Unit unit;
 
     @Column(name = "description")

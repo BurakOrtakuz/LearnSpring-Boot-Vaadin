@@ -1,20 +1,27 @@
 package com.example.application.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
+public enum Unit {
+    MG("mg"),
+    ML("ml"),
+    TABLET("tablet"),
+    CAPSULE("capsule"),
+    DROP("drop"),
+    TUBE("tube"),
+    GRAM("gram"),
+    LITER("liter");
 
-@Entity
-@Table(name = "unit")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Unit {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "unit_id")
-    private Long unitId;
+    private final String displayName;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    Unit(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }
-

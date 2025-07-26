@@ -1,15 +1,11 @@
 package com.example.application.base.ui.layout;
 
 import com.example.application.base.ui.component.MedicineDrawer;
-import com.example.application.base.ui.component.RightDrawer;
 import com.example.application.base.ui.view.Doctor.DoctorAppointmentsView;
 import com.example.application.base.ui.view.Doctor.DoctorView;
 import com.example.application.base.ui.view.HomeView;
 import com.example.application.base.ui.view.MedicineView;
 import com.example.application.service.IMedicineService;
-import com.example.application.service.IUnitService;
-import com.example.application.service.MedicineService;
-import com.example.application.service.UnitService;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -17,13 +13,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
 
 public class DoctorAppLayout extends AppLayout {
-    private final IUnitService unitService;
     private final IMedicineService medicineService;
-    private final RightDrawer medicineDrawer;
+    private final MedicineDrawer medicineDrawer;
 
-    public DoctorAppLayout(IUnitService unitService, IMedicineService medicineService, UnitService unitService1, MedicineService medicineService1) {
-        this.unitService = unitService1;
-        this.medicineService = medicineService1;
+    public DoctorAppLayout(IMedicineService medicineService) {
+        this.medicineService = medicineService;
         VerticalLayout drawerLayout = new VerticalLayout();
         drawerLayout.setClassName("doctor-drawer");
         drawerLayout.setPadding(false);
@@ -31,7 +25,7 @@ public class DoctorAppLayout extends AppLayout {
         drawerLayout.setWidthFull();
         drawerLayout.setHeightFull();
 
-        medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService, unitService);
+        medicineDrawer = new MedicineDrawer("İlaç Ekle", medicineService);
 
         H1 logoText = new H1("ASCHENTE");
         logoText.setClassName("doctor-logo");

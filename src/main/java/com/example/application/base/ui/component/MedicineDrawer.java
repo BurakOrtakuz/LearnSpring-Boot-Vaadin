@@ -4,7 +4,6 @@ import com.example.application.domain.Medicine;
 import com.example.application.domain.Unit;
 import com.example.application.dto.IMedicineResult;
 import com.example.application.service.IMedicineService;
-import com.example.application.service.IUnitService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -14,31 +13,26 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class MedicineDrawer extends RightDrawer{
     private final IMedicineService medicineService;
-    private final IUnitService unitService;
     private TextField medicineNameField;
     private ComboBox<Unit> unitComboBox;
     private TextArea medicineDescriptionField;
 
-    public MedicineDrawer(IMedicineService medicineService, IUnitService unitService) {
+    public MedicineDrawer(IMedicineService medicineService) {
         super();
         this.medicineService = medicineService;
-        this.unitService = unitService;
         createMedicineDrawer();
     }
 
-    public MedicineDrawer(String title, IMedicineService medicineService, IUnitService unitService) {
+    public MedicineDrawer(String title, IMedicineService medicineService) {
         super(title);
         this.medicineService = medicineService;
-        this.unitService = unitService;
         createMedicineDrawer();
     }
 
     public void setItemsValue(IMedicineResult medicineResault) {
         medicineNameField.setValue(medicineResault.getMedicineName());
-        unitComboBox.setValue(medicineResault.getUnit());
-        if(medicineResault.getDescription() != null) {
-            medicineDescriptionField.setValue(medicineResault.getDescription());
-        }
+        // IMedicineResult'ı da güncellemek gerekebilir
+        medicineDescriptionField.setValue(medicineResault.getDescription() != null ? medicineResault.getDescription() : "");
     }
 
     public void lockMedicineNameField() {
@@ -52,8 +46,8 @@ public class MedicineDrawer extends RightDrawer{
 
         unitComboBox = new ComboBox<>();
         unitComboBox.setPlaceholder("Birim giriniz");
-        unitComboBox.setItems(unitService.findAll());
-        unitComboBox.setItemLabelGenerator(Unit::getName);
+        unitComboBox.setItems(Unit.values());
+        unitComboBox.setItemLabelGenerator(Unit::getDisplayName);
 
         medicineDescriptionField = new TextArea();
         medicineDescriptionField.setPlaceholder("İlaç açıklaması giriniz!");
