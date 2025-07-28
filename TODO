@@ -59,7 +59,7 @@ Notificationları kart olarak göster.+
 
 Randevu sayfası yap ve randevu hakkında bilgiler gözüksün. Bildirimden tıklandığında randevu sayfasına yönlendirilsin.
 Doktorların randevularını daha düzgün bir şekilde görebilmesi için bir view ekle.
-Patient kısmına ilaçlar için bilgi ekle.
+Patient kısmına ilaçlar için bilgi ekle. +
 Unit kısmına enuma çevir. +
 Raporları tek şablon üzerinden ilerleyecek şekilde ilerle.
 Patient card kısmındaki alanları ayır.
