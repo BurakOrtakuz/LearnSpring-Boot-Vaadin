@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -38,6 +40,10 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .birthDate(LocalDate.parse(request.getBirthDate()))
+                .gender(request.getGender())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
                 .role(role)
                 .build();
 

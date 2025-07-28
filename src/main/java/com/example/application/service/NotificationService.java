@@ -1,8 +1,6 @@
 package com.example.application.service;
 
-import com.example.application.domain.Doctor;
-import com.example.application.domain.Notification;
-import com.example.application.domain.Person;
+import com.example.application.domain.*;
 import com.example.application.repository.INotificationRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void addNotification(String message, String title, long personId) {
+    public void addNotification(String message, String title, long personId, NotificationType type, Long relatedEntityId) {
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setTitle(title);
@@ -32,6 +30,8 @@ public class NotificationService implements INotificationService {
             throw new IllegalArgumentException("Person with ID " + personId + " does not exist.");
         }
         notification.setPerson(person.get());
+        notification.setType(type);
+        notification.setRelatedEntityId(relatedEntityId);
         notificationRepository.save(notification);
     }
 
@@ -59,7 +59,8 @@ public class NotificationService implements INotificationService {
                 .toList();
     }
 
-    public void sendAppointmentNotificationToPatient(Person patient, Doctor doctor, Date appointmentDate) {
+    @Override
+    public void sendAppointmentNotificationToPatient(Person patient, Doctor doctor, Examination examination, Date appointmentDate) {
         String title = "Yeni Randevu Oluşturuldu";
         String message = String.format("Sayın %s %s, Dr. %s %s ile %s tarihinde randevunuz oluşturulmuştur.",
                 patient.getFirstName(),
@@ -68,10 +69,11 @@ public class NotificationService implements INotificationService {
                 doctor.getPerson().getLastName(),
                 formatDate(appointmentDate));
 
-        addNotification(message, title, patient.getId());
+        addNotification(message, title, patient.getId(), NotificationType.EXAMINATION, examination.getExaminationId());
     }
 
-    public void sendAppointmentNotificationToDoctor(Doctor doctor, Person patient, Date appointmentDate) {
+    @Override
+    public void sendAppointmentNotificationToDoctor(Doctor doctor, Person patient,Examination examination, Date appointmentDate) {
         String title = "Yeni Randevu Bildirimi";
         String message = String.format("Dr. %s %s, %s %s isimli hasta ile %s tarihinde randevunuz bulunmaktadır.",
                 doctor.getPerson().getFirstName(),
@@ -80,7 +82,7 @@ public class NotificationService implements INotificationService {
                 patient.getLastName(),
                 formatDate(appointmentDate));
 
-        addNotification(message, title, doctor.getPerson().getId());
+        addNotification(message, title, doctor.getPerson().getId(), NotificationType.EXAMINATION, examination.getExaminationId());
     }
 
     private String formatDate(Date date) {

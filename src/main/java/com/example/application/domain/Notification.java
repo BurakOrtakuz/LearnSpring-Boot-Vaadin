@@ -33,4 +33,24 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Person person;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private NotificationType type = NotificationType.GENERAL;
+
+    @Column(name = "related_entity_id")
+    private Long relatedEntityId;
+
+    public boolean isExaminationNotification() {
+        return NotificationType.EXAMINATION.equals(this.type);
+    }
+
+    public boolean isPrescriptionNotification() {
+        return NotificationType.PRESCRIPTION.equals(this.type);
+    }
+
+    public Long getExaminationId() {
+        return isExaminationNotification() ? this.relatedEntityId : null;
+    }
+
 }

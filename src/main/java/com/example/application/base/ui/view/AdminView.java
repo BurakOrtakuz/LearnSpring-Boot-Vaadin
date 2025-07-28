@@ -1,6 +1,6 @@
 package com.example.application.base.ui.view;
 
-import com.example.application.base.ui.component.DoctorSideBar;
+import com.example.application.base.ui.layout.AdminLayout;
 import com.example.application.auth.TokenNotFoundException;
 import com.example.application.service.AdminService;
 import com.example.application.service.DoctorService;
@@ -19,7 +19,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -27,7 +26,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Route(value = "/admin", autoLayout = false)
+@Route(value = "/admin", layout = AdminLayout.class)
 @RolesAllowed("ADMIN")
 public class AdminView extends VerticalLayout {
 
@@ -44,20 +43,11 @@ public class AdminView extends VerticalLayout {
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setClassName("horizontal-layout-AdminView");
-        horizontalLayout.setWidthFull();
-        horizontalLayout.setHeightFull();
-        DoctorSideBar doctorSideBar = new DoctorSideBar();
-        doctorSideBar.setHeightFull();
-        doctorSideBar.setClassName("doctor-side-bar");
-        horizontalLayout.add(doctorSideBar);
-        // Sağ taraf: Dinamik Kayıt Formu
-        VerticalLayout formContainer = new VerticalLayout();
-        formContainer.setWidthFull();
-        formContainer.setPadding(true);
-        formContainer.setSpacing(true);
+        setSpacing(true);
+        setPadding(true);
+        setWidthFull();
 
+        // Admin için kullanıcı kayıt formu
         FormLayout formLayout = new FormLayout();
         TextField firstNameField = new TextField("Ad");
         TextField lastNameField = new TextField("Soyad");
@@ -66,6 +56,7 @@ public class AdminView extends VerticalLayout {
         TextField emailField = new TextField("E-posta");
         ComboBox<String> roleCombo = new ComboBox<>("Rol");
         roleCombo.setItems("Admin", "Doctor", "Patient");
+
         // Role özel alanlar
         TextField branchField = new TextField("Branş"); // Doctor
         DatePicker birthDateField = new DatePicker("Doğum Tarihi"); // Patient
@@ -86,6 +77,7 @@ public class AdminView extends VerticalLayout {
                 formLayout.add(rankField);
             }
         });
+
         // Varsayılan olarak sadece ortak alanlar
         formLayout.add(firstNameField, lastNameField, usernameField, passwordField, emailField, roleCombo);
 
@@ -150,9 +142,7 @@ public class AdminView extends VerticalLayout {
             rankField.clear();
             roleCombo.clear();
         });
-        formContainer.add(formLayout, saveButton);
-        horizontalLayout.add(formContainer);
-        add(horizontalLayout);
-    }
 
+        add(formLayout, saveButton);
+    }
 }

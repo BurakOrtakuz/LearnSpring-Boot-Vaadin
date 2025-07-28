@@ -289,7 +289,12 @@ public class RegisterDialog extends Dialog {
                     lastName,
                     username,
                     email,
-                    password);
+                    password,
+                    birthDate,
+                    gender,
+                    phoneNumber,
+                    address
+                    );
             RegisterResponse response = authenticationService.register(registerRequest);
             Notification.show("Kayıt başarılı! Giriş yapabilirsiniz.", 3000, Notification.Position.MIDDLE);
             return true;

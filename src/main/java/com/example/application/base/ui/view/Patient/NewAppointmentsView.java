@@ -100,8 +100,8 @@ public class NewAppointmentsView extends VerticalLayout {
                         examinationService.save(examination);
 
                         Date appointmentDate = java.sql.Timestamp.valueOf(selectedDate.atTime(selectedTime));
-                        notificationService.sendAppointmentNotificationToPatient(person, selectedDoctor, appointmentDate);
-                        notificationService.sendAppointmentNotificationToDoctor(selectedDoctor, person, appointmentDate);
+                        notificationService.sendAppointmentNotificationToPatient(person, selectedDoctor,examination, appointmentDate);
+                        notificationService.sendAppointmentNotificationToDoctor(selectedDoctor, person, examination, appointmentDate);
 
                         Notification.show("Randevunuz başarıyla oluşturuldu!", 3000, Notification.Position.TOP_CENTER);
                         doctorComboBox.clear();
