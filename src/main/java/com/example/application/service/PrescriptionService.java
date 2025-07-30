@@ -37,22 +37,14 @@ public class PrescriptionService implements IPrescriptionService {
     }
 
     @Override
-    public Prescription saveDocument(Long prescriptionId, byte[] document) {
-        Prescription prescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("Prescription not found"));
-        prescription.setDocument(document);
-        return prescriptionRepository.save(prescription);
-    }
-
-    @Override
-    public byte[] getDocument(Long prescriptionId) {
-        Prescription prescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("Prescription not found"));
-        return prescription.getDocument();
-    }
-
-    @Override
     public Optional<Prescription> getByExaminationId(Long examinationId) {
         return prescriptionRepository.findById(examinationId);
     }
+
+    @Override
+    public Optional<Prescription> getPrescriptionById(Long id) {
+        return prescriptionRepository.findById(id);
+    }
 }
+
+

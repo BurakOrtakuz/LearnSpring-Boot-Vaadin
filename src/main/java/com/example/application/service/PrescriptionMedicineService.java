@@ -40,4 +40,9 @@ public class PrescriptionMedicineService implements IPrescriptionMedicineService
     public void deleteById(Long id) {
         prescriptionMedicineRepository.deleteById(id);
     }
+
+    @Override
+    public List<PrescriptionMedicine> getMedicinesByPrescriptionId(Long id) {
+        return prescriptionMedicineRepository.findByPrescriptionPrescriptionId(id);
+    }
 }

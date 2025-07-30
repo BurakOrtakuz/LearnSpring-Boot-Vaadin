@@ -1,10 +1,6 @@
 package com.example.application.base.ui.view.Doctor;
 
-import com.example.application.Jaster.CreatePdf;
-import com.example.application.domain.Examination;
-import com.example.application.domain.Medicine;
-import com.example.application.domain.Prescription;
-import com.example.application.domain.PrescriptionMedicine;
+import com.example.application.domain.*;
 import com.example.application.service.ExaminationService;
 import com.example.application.service.IPrescriptionMedicineService;
 import com.example.application.service.MedicineService;
@@ -33,15 +29,13 @@ import java.util.List;
 public class CreatePrescriptionView extends VerticalLayout implements HasUrlParameter<Long> {
     private final PrescriptionService prescriptionService;
     private final ExaminationService examinationService;
-    private final CreatePdf createPdf;
     private final MedicineService medicineService;
     private Examination examination;
     private final IPrescriptionMedicineService prescriptionMedicineService;
 
-    public CreatePrescriptionView(PrescriptionService prescriptionService, ExaminationService examinationService, CreatePdf createPdf, MedicineService medicineService, IPrescriptionMedicineService prescriptionMedicineService) {
+    public CreatePrescriptionView(PrescriptionService prescriptionService, ExaminationService examinationService, MedicineService medicineService, IPrescriptionMedicineService prescriptionMedicineService) {
         this.prescriptionService = prescriptionService;
         this.examinationService = examinationService;
-        this.createPdf = createPdf;
         this.medicineService = medicineService;
         this.prescriptionMedicineService = prescriptionMedicineService;
         setSpacing(true);
@@ -118,7 +112,8 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                 prescription.setDoctor(examination.getDoctor());
                 prescription.setPatient(examination.getPatient());
                 prescription.setMedicines(selectedMedicines);
-
+                prescription.setDoctorNote(prescriptionArea.getValue());
+                prescription.setPrescriptionStatus(PrescriptionStatus.CREATED);
                 // Prescription'ı önce kaydet
                 Prescription savedPrescription = prescriptionService.save(prescription);
 
@@ -128,17 +123,6 @@ public class CreatePrescriptionView extends VerticalLayout implements HasUrlPara
                     prescriptionMedicineService.save(pm);
                 }
 
-                com.example.application.Jaster.Prescription jasperPrescription = new com.example.application.Jaster.Prescription(
-                        examination.getPatient().getPerson().getFirstName() + " " + examination.getPatient().getPerson().getLastName(),
-                        examination.getDate(),
-                        examination.getPatient().getPerson().getUsername(),
-                        examination.getDoctor().getPerson().getFirstName() + " " + examination.getDoctor().getPerson().getLastName(),
-                        prescriptionArea.getValue()
-                );
-
-                byte[] pdfBytes = createPdf.generatePdf(jasperPrescription, selectedMedicines);
-
-                savedPrescription.setDocument(pdfBytes);
                 prescriptionService.save(savedPrescription);
 
                 Notification.show("Reçete PDF ve ilaçlar ile kaydedildi!", 3000, Notification.Position.TOP_CENTER);

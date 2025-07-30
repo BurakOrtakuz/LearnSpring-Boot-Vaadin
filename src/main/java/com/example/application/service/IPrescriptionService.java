@@ -10,10 +10,8 @@ public interface IPrescriptionService {
     Prescription save(Prescription prescription);
     void deleteById(Long id);
 
-    //Document
-    Prescription saveDocument(Long prescriptionId, byte[] document);
-    byte[] getDocument(Long prescriptionId);
-
     Optional<Prescription> getByExaminationId(Long examinationId);
+
+    Optional<Prescription> getPrescriptionById(Long id);
 }
 

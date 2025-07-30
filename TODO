@@ -61,5 +61,21 @@ Randevu sayfası yap ve randevu hakkında bilgiler gözüksün. Bildirimden tık
 Doktorların randevularını daha düzgün bir şekilde görebilmesi için bir view ekle.
 Patient kısmına ilaçlar için bilgi ekle. +
 Unit kısmına enuma çevir. +
-Raporları tek şablon üzerinden ilerleyecek şekilde ilerle.
+Raporları tek şablon üzerinden ilerleyecek şekilde ilerle.+
 Patient card kısmındaki alanları ayır.
+
+Raporların templatelerin yüklenip yönetildiği bir menü ekle.
+Zip olsun açtığında içerisindeki dosyalar gözüksün.
+Raporlar kayıt olacak ve kayıt edilen template raporu kullanılacak.
+Ekstra unique key ekle ve bu keyler üzerinden raporlar yönetilsin. (Private id olan değil)
+Rapor templatelerinin olduğu bir entity olsun.
+Templateler veritabanında saklansın.
+Hasta randevu aldığında randevu ekle kısmı olsun.
+Readonly fieldlarda textfield kullanma Label Span olabilir.
+Pagination araştır ne oldğunu öğren ve kullan. Filtreleme kısmında pagination kullan.Querryleri sadeleştir. Daha performanslı olsun.
+Hasta randevu kısmında statü durumu eklensin.
+Haste bilgileri kan grubu vs olsun
+Hasta kartına tanı ekle.
+Admin olarak ilaç listesini düzenleme , hasta listesi düzenleme, doktor listesi düzenleme, randevu listesi düzenleme işlemleri yapılabilsin.
+biten randevular, statüye göre yapma ve kayıtta oynama işlemleri yapılsın.
+Medicine kısmındaki gibi filtreleme işlemleri yapılsın.

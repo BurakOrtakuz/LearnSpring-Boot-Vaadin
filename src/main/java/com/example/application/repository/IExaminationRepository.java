@@ -10,48 +10,40 @@ import java.util.Date;
 import java.util.List;
 
 public interface IExaminationRepository extends JpaRepository<Examination, Long> {
-    @Query(value =
-        """
-            Select
-                e.date as date,
-                concat(p.first_name,' ',p.last_name) as doctorName,
-                e.complaint as complaint,
-                CASE
-                    WHEN pr.document IS NULL THEN -1
-                    ELSE pr.prescription_id
-                    END as prescriptionId
-            from examination as e
-                inner join doctor as d on e.doctor_id = d.doctor_id
-                inner join patient as pa on e.patient_id = pa.patient_id
-                inner join person as p on p.person_id = d.doctor_id
-                left join prescription as pr on pr.examination_id = e.examination_id
-            where  to_char(e.date, 'YYYY-MM-DD HH24:MI')ILIKE '%'|| :query || '%'
-                or concat(p.first_name,' ',p.last_name) ILIKE '%' || :query || '%'
-                or e.complaint ILIKE '%' || :query || '%'
-        """
-            ,nativeQuery = true)
+    @Query("""
+        SELECT e.date as date,
+               CONCAT(e.doctor.person.firstName, ' ', e.doctor.person.lastName) as doctorName,
+               e.complaint as complaint,
+               CASE
+                   WHEN p IS NULL THEN -1
+                   WHEN p.prescriptionStatus = 'NOT_CREATED' THEN -1
+                   ELSE p.prescriptionId
+               END as prescriptionId
+        FROM Examination e
+        LEFT JOIN Prescription p ON p.examination.examinationId = e.examinationId
+        WHERE CAST(e.date AS string) LIKE CONCAT('%', :query, '%')
+           OR CONCAT(e.doctor.person.firstName, ' ', e.doctor.person.lastName) LIKE CONCAT('%', :query, '%')
+           OR e.complaint LIKE CONCAT('%', :query, '%')
+        """)
     List<IPatientExaminationSearchResult> patientSearchResult(String query);
-    @Query(value =
-        """
-            Select
-                e.date as date,
-                concat(p.first_name,' ',p.last_name) as patientName,
-                e.complaint as complaint,
-                p.person_id as patientId,
-                CASE
-                    WHEN pr.document IS NULL THEN -1
-                    ELSE pr.prescription_id
-                    END as prescriptionId,
-                e.examination_id as examinationId
-            from examination as e
-                inner join patient as pa on e.patient_id = pa.patient_id
-                inner join person as p on p.person_id = pa.patient_id
-                left join prescription as pr on pr.examination_id = e.examination_id
-            where  to_char(e.date, 'YYYY-MM-DD HH24:MI')ILIKE '%'|| :query || '%'
-                or concat(p.first_name,' ',p.last_name) ILIKE '%' || :query || '%'
-                or e.complaint ILIKE '%' || :query || '%'
-        """
-            ,nativeQuery = true)
+
+    @Query("""
+        SELECT e.date as date,
+               CONCAT(e.patient.person.firstName, ' ', e.patient.person.lastName) as patientName,
+               e.complaint as complaint,
+               e.patient.patientId as patientId,
+               CASE
+                   WHEN p IS NULL THEN -1
+                   WHEN p.prescriptionStatus = 'NOT_CREATED' THEN -1
+                   ELSE p.prescriptionId
+               END as prescriptionId,
+               e.examinationId as examinationId
+        FROM Examination e
+        LEFT JOIN Prescription p ON p.examination.examinationId = e.examinationId
+        WHERE CAST(e.date AS string) LIKE CONCAT('%', :query, '%')
+           OR CONCAT(e.patient.person.firstName, ' ', e.patient.person.lastName) LIKE CONCAT('%', :query, '%')
+           OR e.complaint LIKE CONCAT('%', :query, '%')
+        """)
     List<IDoctorExaminationSearchResult> doctorSearchResult(String query);
 
     @Query(value=

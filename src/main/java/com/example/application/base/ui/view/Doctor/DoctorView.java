@@ -66,6 +66,7 @@ public class DoctorView extends VerticalLayout {
         notificationCard.addClickListener(event -> {
             notificationService.markAsRead(notification.getId());
             notificationCard.getStyle().set("background-color", "#f5f5f5");
+            event.getSource().getUI().ifPresent(ui -> ui.navigate("doctor/examination-detail/" + notification.getRelatedEntityId()));
         });
 
         H3 title = new H3(notification.getTitle());

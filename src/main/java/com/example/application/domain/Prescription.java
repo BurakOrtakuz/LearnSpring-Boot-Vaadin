@@ -30,7 +30,10 @@ public class Prescription {
     @JoinColumn(name = "examination_id")
     private Examination examination;
 
-    @Lob
-    @Column(name = "document")
-    private byte[] document;
+    @Column(name = "dr_note")
+    private String doctorNote;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "prescription_status", nullable = false)
+    private PrescriptionStatus prescriptionStatus = PrescriptionStatus.NOT_CREATED;
 }

@@ -20,4 +20,6 @@ public interface IPrescriptionMedicineRepository extends JpaRepository<Prescript
                 where pm.prescription.patient.patientId = :personId
             """)
     List<IPrescriptionMedicineByPersonResult> findByPrescription_Person_PersonId(Long personId);
+
+    List<PrescriptionMedicine> findByPrescriptionPrescriptionId(Long prescriptionId);
 }

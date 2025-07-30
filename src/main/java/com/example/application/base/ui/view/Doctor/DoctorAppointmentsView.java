@@ -63,7 +63,9 @@ public class DoctorAppointmentsView extends VerticalLayout {
                         HorizontalLayout layout = new HorizontalLayout();
                         layout.setSpacing(true);
                         layout.add(new RouterLink("Reçeteyi Güncelle", CreatePrescriptionView.class, (long)e.getExaminationId()));
-                        layout.add(new Anchor("/api/prescription/pdf/" + e.getPrescriptionId(), "Reçete Görüntüle"));
+                        Anchor link = new Anchor("/api/prescription/pdf/" + e.getPrescriptionId(), "Reçeteyi Görüntüle");
+                        link.setTarget("_blank");
+                        layout.add(link);
                         return layout;
                     }
                     return new RouterLink("Reçete Yaz", CreatePrescriptionView.class, (long)e.getExaminationId());
@@ -75,7 +77,7 @@ public class DoctorAppointmentsView extends VerticalLayout {
             IDoctorExaminationSearchResult examination = event.getItem();
             if (examination != null) {
                 // Hasta detay sayfasına git
-                getUI().ifPresent(ui -> ui.navigate("doctor/patient-details/" + examination.getPatientId()));
+                getUI().ifPresent(ui -> ui.navigate("doctor/examination-detail/" + examination.getExaminationId()));
             }
         });
         add(searchField,table);

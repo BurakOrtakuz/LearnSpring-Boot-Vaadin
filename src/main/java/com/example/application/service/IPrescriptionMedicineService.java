@@ -12,5 +12,7 @@ public interface IPrescriptionMedicineService {
     Optional<PrescriptionMedicine> findById(Long id);
     PrescriptionMedicine save(PrescriptionMedicine prescriptionMedicine);
     void deleteById(Long id);
+
+    List<PrescriptionMedicine> getMedicinesByPrescriptionId(Long id);
 }
 

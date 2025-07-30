@@ -30,7 +30,7 @@ public class ExaminationDetailComponent extends VerticalLayout {
 
     public ExaminationDetailComponent(ExaminationService examinationService) {
         this.examinationService = examinationService;
-        this.backNavigationTarget = ""; // Default navigation target
+        this.backNavigationTarget = "";
 
         setSpacing(true);
         setPadding(true);
@@ -131,6 +131,9 @@ public class ExaminationDetailComponent extends VerticalLayout {
 
     private Component createPatientInfoSection() {
         VerticalLayout section = new VerticalLayout();
+        section.addClickListener(e -> getUI().ifPresent(ui -> {
+            ui.navigate("doctor/patient-details/" + examination.getPatient().getPatientId());
+        }));
         section.setSpacing(false);
         section.setPadding(false);
 
