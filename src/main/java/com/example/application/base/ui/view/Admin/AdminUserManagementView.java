@@ -1,6 +1,7 @@
 package com.example.application.base.ui.view.Admin;
 
 import com.example.application.base.ui.layout.AdminLayout;
+import com.example.application.service.IDoctorService;
 import com.example.application.service.IPatientService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -16,7 +17,7 @@ import jakarta.annotation.security.RolesAllowed;
 public class AdminUserManagementView extends VerticalLayout {
 
     private final IPatientService patientService;
-    public AdminUserManagementView(IPatientService patientService) {
+    public AdminUserManagementView(IPatientService patientService, IDoctorService doctorService) {
         this.patientService = patientService;
         setSizeFull();
         setPadding(true);
@@ -28,7 +29,7 @@ public class AdminUserManagementView extends VerticalLayout {
 
         tabSheet.addThemeVariants(TabSheetVariant.LUMO_TABS_EQUAL_WIDTH_TABS);
         tabSheet.add("Hastalar", new PatientManagementView(patientService));
-        tabSheet.add("Doktorlar", createDoctorView());
+        tabSheet.add("Doktorlar", new DoctorManagementView(doctorService));
         tabSheet.add("Yöneticiler", createAdminView());
 
         add(tabSheet);

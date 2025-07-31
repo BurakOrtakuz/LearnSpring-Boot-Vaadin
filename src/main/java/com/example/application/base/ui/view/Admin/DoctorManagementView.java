@@ -1,11 +1,11 @@
 package com.example.application.base.ui.view.Admin;
 
 import com.example.application.base.ui.component.table.ColumnConfig;
-import com.example.application.base.ui.view.PatientCard;
+import com.example.application.domain.Doctor;
 import com.example.application.domain.Patient;
-import com.example.application.service.IPatientService;
+import com.example.application.service.IDoctorService;
+import com.example.application.specifications.criteria.DoctorFilterCriteria;
 import com.example.application.specifications.criteria.PatientFilterCriteria;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
@@ -17,61 +17,57 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class PatientManagementView extends BaseManagementView<Patient> {
+public class DoctorManagementView extends BaseManagementView{
 
-    private final IPatientService patientService;
-
-    public PatientManagementView(IPatientService patientService) {
+    private final IDoctorService doctorService;
+    public DoctorManagementView(IDoctorService doctorService) {
         super();
-        this.patientService = patientService;
+        this.doctorService = doctorService;
         super.init();
         filterBar.setReloadCallback(this::applyFilters);
         this.table.addItemDoubleClickListener(event -> {
-            Patient selectedPatient = event.getItem();
-            if (selectedPatient != null) {
-                UI.getCurrent().navigate("admin/patient-details/" + selectedPatient.getPatientId());
-            }
+            // UI.getCurrent().navigate("admin/doctor-details/" + selectedDoctor.getId());
         });
     }
-
     @Override
-    public List<ColumnConfig<Patient, ?>> getColumnConfigs() {
+    public List<ColumnConfig<Doctor,?>> getColumnConfigs() {
         return List.of(
-                new ColumnConfig<>("Ad", e-> e.getPerson().getFirstName(), true),
+                new ColumnConfig<>("Ad", e -> e.getPerson().getFirstName(), true),
                 new ColumnConfig<>("Soyad", e -> e.getPerson().getLastName(), true),
                 new ColumnConfig<>("TC No", e -> e.getPerson().getTcNo(), true),
-                new ColumnConfig<>("Kan Grubu", Patient::getBloodType, true),
+                new ColumnConfig<>("Uzmanlık Alanı", Doctor::getBranch, true),
                 new ColumnConfig<>("Telefon", e -> e.getPerson().getPhoneNumber(), true),
                 new ColumnConfig<>("E-posta", e -> e.getPerson().getEmail(), true),
                 new ColumnConfig<>("Doğum Tarihi", e -> e.getPerson().getBirthDate().toString(), true),
                 new ColumnConfig<>("Cinsiyet", e -> e.getPerson().getGender(), true),
                 new ColumnConfig<>("Adres", e -> e.getPerson().getAddress(), true)
-                );
+        );
     }
 
     @Override
-    public Page<Patient> loadData(int page, int size) {
+    public Page loadData(int page, int size) {
         // Get current filter values
         Map<String, Object> filters = filterBar != null ? filterBar.getFilterValues() : Map.of();
 
-        PatientFilterCriteria criteria = PatientFilterCriteria.builder()
+        DoctorFilterCriteria criteria = DoctorFilterCriteria.builder()
                 .firstName((String) filters.getOrDefault("firstName", ""))
                 .lastName((String) filters.getOrDefault("lastName", ""))
                 .tcNo((String) filters.getOrDefault("tcNo", ""))
-                .bloodType((String) filters.getOrDefault("bloodType", ""))
+                .specialization((String) filters.getOrDefault("specialization", ""))
                 .phoneNumber((String) filters.getOrDefault("phoneNumber", ""))
                 .email((String) filters.getOrDefault("email", ""))
-                .birthDate(parseBirthDate(filters.get("birthDate")))
+                .birthDate(super.parseBirthDate(filters.get("birthDate")))
                 .gender((String) filters.get("gender"))
                 .address((String) filters.getOrDefault("address", ""))
                 .build();
 
-        Page<Patient> result = patientService.findWithFilters(criteria, PageRequest.of(page, size));
+        Page<Doctor> result = doctorService.findWithFilters(criteria, PageRequest.of(page, size));
 
         // Update table and pagination
         updateTableData(result);
 
         return result;
+
     }
 
     @Override
@@ -79,7 +75,7 @@ public class PatientManagementView extends BaseManagementView<Patient> {
         TextField nameFilter = new TextField("Ad");
         TextField surnameFilter = new TextField("Soyad");
         TextField tcNoFilter = new TextField("TC No");
-        TextField bloodTypeFilter = new TextField("Kan Grubu");
+        TextField bloodTypeFilter = new TextField("Alanı");
         TextField phoneFilter = new TextField("Telefon");
         TextField emailFilter = new TextField("E-posta");
         DatePicker birthDateFilter = new DatePicker("Doğum Tarihi");
@@ -91,7 +87,7 @@ public class PatientManagementView extends BaseManagementView<Patient> {
         filterBar.addFilterComponent(nameFilter, nameFilter::getValue, "firstName");
         filterBar.addFilterComponent(surnameFilter, surnameFilter::getValue, "lastName");
         filterBar.addFilterComponent(tcNoFilter, tcNoFilter::getValue, "tcNo");
-        filterBar.addFilterComponent(bloodTypeFilter, bloodTypeFilter::getValue, "bloodType");
+        filterBar.addFilterComponent(bloodTypeFilter, bloodTypeFilter::getValue, "specialization");
         filterBar.addFilterComponent(phoneFilter, phoneFilter::getValue, "phoneNumber");
         filterBar.addFilterComponent(emailFilter, emailFilter::getValue, "email");
         filterBar.addFilterComponent(birthDateFilter, birthDateFilter::getValue, "birthDate");
@@ -105,26 +101,24 @@ public class PatientManagementView extends BaseManagementView<Patient> {
         resetToFirstPage();
     }
 
-
-
     @Override
     protected String getTitle() {
-        return "Hasta Yönetimi";
+        return "";
     }
 
     @Override
     protected void onAddNew() {
-        // TODO: Implement add new patient
+
     }
 
     @Override
-    protected void onEdit(Patient item) {
-        // TODO: Implement edit patient
+    protected void onEdit(Object item) {
+
     }
 
     @Override
-    protected void onDelete(Patient item) {
-        // TODO: Implement delete patient
+    protected void onDelete(Object item) {
+
     }
 
 }

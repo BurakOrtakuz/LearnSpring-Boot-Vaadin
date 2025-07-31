@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,6 @@ public abstract class BaseManagementView<T> extends VerticalLayout {
     protected abstract void onAddNew();
     protected abstract void onEdit(T item);
     protected abstract void onDelete(T item);
-    protected abstract boolean matchesFilters(T item, Map<String, Object> filters);
 
     // Pagination event handlers
     protected void onPageChange(int newPage) {
@@ -95,5 +95,21 @@ public abstract class BaseManagementView<T> extends VerticalLayout {
     protected void resetToFirstPage() {
         currentPage = 0;
         loadData(currentPage, pageSize);
+    }
+    protected LocalDate parseBirthDate(Object birthDateValue) {
+        if (birthDateValue == null) {
+            return null;
+        }
+        if (birthDateValue instanceof LocalDate) {
+            return (LocalDate) birthDateValue;
+        }
+        if (birthDateValue instanceof String && !((String) birthDateValue).isEmpty()) {
+            try {
+                return LocalDate.parse((String) birthDateValue);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 }

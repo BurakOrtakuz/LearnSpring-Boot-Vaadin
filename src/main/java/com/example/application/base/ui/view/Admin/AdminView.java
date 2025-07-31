@@ -3,11 +3,9 @@ package com.example.application.base.ui.view.Admin;
 import com.example.application.base.ui.layout.AdminLayout;
 import com.example.application.auth.TokenNotFoundException;
 import com.example.application.domain.*;
-import com.example.application.service.AdminService;
-import com.example.application.service.DoctorService;
-import com.example.application.service.PatientService;
-import com.example.application.service.RoleService;
+import com.example.application.service.*;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -32,13 +30,15 @@ public class AdminView extends VerticalLayout {
     private final PatientService patientService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final PersonService personService;
 
-    public AdminView(DoctorService doctorService, AdminService adminService, PatientService patientService, RoleService roleService, PasswordEncoder passwordEncoder) throws TokenNotFoundException {
+    public AdminView(DoctorService doctorService, AdminService adminService, PatientService patientService, RoleService roleService, PasswordEncoder passwordEncoder, PersonService personService, PersonService personService1) throws TokenNotFoundException {
         this.doctorService = doctorService;
         this.adminService = adminService;
         this.patientService = patientService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.personService = personService1;
 
         setSpacing(true);
         setPadding(true);
@@ -49,7 +49,9 @@ public class AdminView extends VerticalLayout {
         TextField firstNameField = new TextField("Ad");
         TextField lastNameField = new TextField("Soyad");
         TextField usernameField = new TextField("Kullanıcı Adı");
+        TextField identityNumberField = new TextField("Kimlik Numarası");
         PasswordField passwordField = new PasswordField("Şifre");
+        PasswordField confirmPasswordField = new PasswordField("Şifre Tekrar");
         TextField emailField = new TextField("E-posta");
         ComboBox<String> roleCombo = new ComboBox<>("Rol");
         roleCombo.setItems("Admin", "Doctor", "Patient");
@@ -64,7 +66,7 @@ public class AdminView extends VerticalLayout {
         // Dinamik alan yönetimi
         roleCombo.addValueChangeListener(event -> {
             formLayout.removeAll();
-            formLayout.add(firstNameField, lastNameField, usernameField, passwordField, emailField, roleCombo);
+            formLayout.add(firstNameField, lastNameField, usernameField,identityNumberField, passwordField, confirmPasswordField,birthDateField, emailField, roleCombo);
             String role = event.getValue();
             if ("Doctor".equals(role)) {
                 formLayout.add(branchField);
@@ -76,68 +78,82 @@ public class AdminView extends VerticalLayout {
         });
 
         // Varsayılan olarak sadece ortak alanlar
-        formLayout.add(firstNameField, lastNameField, usernameField, passwordField, emailField, roleCombo);
+        formLayout.add(firstNameField, lastNameField, usernameField,identityNumberField, passwordField,confirmPasswordField,birthDateField ,emailField, roleCombo);
 
         Button saveButton = new Button("Kaydet", e -> {
-            String firstName = firstNameField.getValue();
-            String lastName = lastNameField.getValue();
-            String username = usernameField.getValue();
-            String password = passwordField.getValue();
-            String email = emailField.getValue();
-            String roleName = roleCombo.getValue();
-            String branch = branchField.getValue();
-            LocalDate birthDate = birthDateField.getValue();
-            String gender = genderField.getValue();
-            String rank = rankField.getValue();
+            if(!Objects.equals(passwordField.getValue(), confirmPasswordField.getValue())){
+                Notification.show("Şifreler eşleşmiyor");
+            }
+            else
+            {
+                String firstName = firstNameField.getValue();
+                String lastName = lastNameField.getValue();
+                String username = usernameField.getValue();
+                String identityNumber = identityNumberField.getValue();
+                String password = passwordField.getValue();
+                String email = emailField.getValue();
+                String roleName = roleCombo.getValue();
+                String branch = branchField.getValue();
+                LocalDate birthDate = birthDateField.getValue();
+                String gender = genderField.getValue();
+                String rank = rankField.getValue();
 
-            if (roleName == null) {
-                Notification.show("Lütfen bir rol seçin.");
-                return;
-            }
-            Optional<Role> roleOpt = roleService.findAll().stream().filter(r -> r.getName().equalsIgnoreCase(roleName)).findFirst();
-            if (roleOpt.isEmpty()) {
-                Notification.show("Rol bulunamadı!");
-                return;
-            }
-            Role role = roleOpt.get();
-            Person person = new Person();
-            person.setFirstName(firstName);
-            person.setLastName(lastName);
-            person.setUsername(username);
-            person.setPassword(passwordEncoder.encode(password));
-            person.setEmail(email);
-            person.setRole(role);
-            if ("Patient".equals(roleName)) {
+                if (roleName == null) {
+                    Notification.show("Lütfen bir rol seçin.");
+                    return;
+                }
+                Optional<Role> roleOpt = roleService.findAll().stream().filter(r -> r.getName().equalsIgnoreCase(roleName)).findFirst();
+                if (roleOpt.isEmpty()) {
+                    Notification.show("Rol bulunamadı!");
+                    return;
+                }
+                Role role = roleOpt.get();
+                Person person = new Person();
+                person.setFirstName(firstName);
+                person.setLastName(lastName);
+                person.setUsername(username);
+                person.setTcNo(identityNumber);
                 person.setBirthDate(birthDate);
-                person.setGender(gender);
+                person.setPassword(passwordEncoder.encode(password));
+                person.setEmail(email);
+                person.setRole(role);
+                if ("Patient".equals(roleName)) {
+                    person.setBirthDate(birthDate);
+                    person.setGender(gender);
+                }
+                // Kayıt işlemi
+                // Username benzersiz mi kontrolü
+                if (doctorService.findPersonByUsername(username).isPresent()) {
+                    Notification.show("Bu kullanıcı adı zaten mevcut!");
+                    return;
+                }
+                if ("Doctor".equals(roleName)) {
+                    Doctor doctorEntity = new Doctor();
+                    doctorEntity.setPerson(person);
+                    doctorEntity.setBranch(branch);
+                    doctorService.save(doctorEntity);
+                    Notification.show("Doktor kaydı başarıyla oluşturuldu!");
+                } else if ("Patient".equals(roleName)) {
+                    person = patientService.save(new Patient(null, BloodType.A_POSITIVE, person)).getPerson();
+                    Notification.show("Hasta kaydı başarıyla oluşturuldu!");
+                } else if ("Admin".equals(roleName)) {
+                    person = adminService.save(new Admin(null, person, rank)).getPerson();
+                    Notification.show("Admin kaydı başarıyla oluşturuldu!");
+                }
+                // Alanları temizle
+                firstNameField.clear();
+                lastNameField.clear();
+                usernameField.clear();
+                identityNumberField.clear();
+                passwordField.clear();
+                emailField.clear();
+                branchField.clear();
+                birthDateField.clear();
+                genderField.clear();
+                rankField.clear();
+                roleCombo.clear();
             }
-            // Kayıt işlemi
-            // Username benzersiz mi kontrolü
-            if (doctorService.findPersonByUsername(username).isPresent()) {
-                Notification.show("Bu kullanıcı adı zaten mevcut!");
-                return;
-            }
-            if ("Doctor".equals(roleName)) {
-                person = doctorService.save(new Doctor(null, person, branch)).getPerson();
-                Notification.show("Doktor kaydı başarıyla oluşturuldu!");
-            } else if ("Patient".equals(roleName)) {
-                person = patientService.save(new Patient(null, BloodType.A_POSITIVE, person)).getPerson();
-                Notification.show("Hasta kaydı başarıyla oluşturuldu!");
-            } else if ("Admin".equals(roleName)) {
-                person = adminService.save(new Admin(null, person, rank)).getPerson();
-                Notification.show("Admin kaydı başarıyla oluşturuldu!");
-            }
-            // Alanları temizle
-            firstNameField.clear();
-            lastNameField.clear();
-            usernameField.clear();
-            passwordField.clear();
-            emailField.clear();
-            branchField.clear();
-            birthDateField.clear();
-            genderField.clear();
-            rankField.clear();
-            roleCombo.clear();
+
         });
 
         add(formLayout, saveButton);
