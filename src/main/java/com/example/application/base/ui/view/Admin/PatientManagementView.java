@@ -18,6 +18,7 @@ import java.util.Map;
 public class PatientManagementView extends BaseManagementView<Patient> {
 
     private final IPatientService patientService;
+
     public PatientManagementView(IPatientService patientService) {
         super();
         this.patientService = patientService;
@@ -41,12 +42,28 @@ public class PatientManagementView extends BaseManagementView<Patient> {
     }
 
     @Override
-    public List<Patient> loadData() {
-        Page<Patient> page = patientService.findWithFilters(
-            PatientFilterCriteria.builder().build(),
-            PageRequest.of(0, 10)
-        );
-        return page.getContent();
+    public Page<Patient> loadData(int page, int size) {
+        // Get current filter values
+        Map<String, Object> filters = filterBar != null ? filterBar.getFilterValues() : Map.of();
+
+        PatientFilterCriteria criteria = PatientFilterCriteria.builder()
+                .firstName((String) filters.getOrDefault("firstName", ""))
+                .lastName((String) filters.getOrDefault("lastName", ""))
+                .tcNo((String) filters.getOrDefault("tcNo", ""))
+                .bloodType((String) filters.getOrDefault("bloodType", ""))
+                .phoneNumber((String) filters.getOrDefault("phoneNumber", ""))
+                .email((String) filters.getOrDefault("email", ""))
+                .birthDate(parseBirthDate(filters.get("birthDate")))
+                .gender((String) filters.get("gender"))
+                .address((String) filters.getOrDefault("address", ""))
+                .build();
+
+        Page<Patient> result = patientService.findWithFilters(criteria, PageRequest.of(page, size));
+
+        // Update table and pagination
+        updateTableData(result);
+
+        return result;
     }
 
     @Override
@@ -63,7 +80,6 @@ public class PatientManagementView extends BaseManagementView<Patient> {
         genderFilter.setItems("Erkek", "Kadın");
         TextField addressFilter = new TextField("Adres");
 
-
         filterBar.addFilterComponent(nameFilter, nameFilter::getValue, "firstName");
         filterBar.addFilterComponent(surnameFilter, surnameFilter::getValue, "lastName");
         filterBar.addFilterComponent(tcNoFilter, tcNoFilter::getValue, "tcNo");
@@ -77,22 +93,8 @@ public class PatientManagementView extends BaseManagementView<Patient> {
 
     @Override
     protected void applyFilters() {
-        Map<String, Object> filters = filterBar.getFilterValues();
-
-        PatientFilterCriteria criteria = PatientFilterCriteria.builder()
-                .firstName((String) filters.getOrDefault("firstName", ""))
-                .lastName((String) filters.getOrDefault("lastName", ""))
-                .tcNo((String) filters.getOrDefault("tcNo", ""))
-                .bloodType((String) filters.getOrDefault("bloodType", ""))
-                .phoneNumber((String) filters.getOrDefault("phoneNumber", ""))
-                .email((String) filters.getOrDefault("email", ""))
-                .birthDate(parseBirthDate(filters.get("birthDate"))) // Safe parsing
-                .gender((String) filters.get("gender"))
-                .address((String) filters.getOrDefault("address", ""))
-                .build();
-
-        Page<Patient> filtered = patientService.findWithFilters(criteria, PageRequest.of(0, 10));
-        table.setItems(filtered.getContent());
+        // Reset to first page when filters change
+        resetToFirstPage();
     }
 
     private LocalDate parseBirthDate(Object birthDateValue) {
@@ -114,26 +116,28 @@ public class PatientManagementView extends BaseManagementView<Patient> {
 
     @Override
     protected String getTitle() {
-        return "";
+        return "Hasta Yönetimi";
     }
 
     @Override
     protected void onAddNew() {
-
+        // TODO: Implement add new patient
     }
 
     @Override
     protected void onEdit(Patient item) {
-
+        // TODO: Implement edit patient
     }
 
     @Override
     protected void onDelete(Patient item) {
-
+        // TODO: Implement delete patient
     }
 
     @Override
     protected boolean matchesFilters(Patient item, Map<String, Object> filters) {
-        return false;
+        // This method is not used anymore since we use Specification
+        return true;
     }
 }
+
