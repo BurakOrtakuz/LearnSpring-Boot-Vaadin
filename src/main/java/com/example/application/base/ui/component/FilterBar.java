@@ -30,7 +30,8 @@ public class FilterBar extends SplitLayout {
 
     public FilterBar(Component mainContent) {
         this.mainContent = mainContent;
-        filterBar.setWidthFull();
+        filterBar.setSizeFull();
+
         filterBar.getStyle().set("gap", "1em");
 
         Button closeButton = new Button(VaadinIcon.CLOSE.create(), e -> filterBar.setVisible(false));
@@ -70,7 +71,14 @@ public class FilterBar extends SplitLayout {
 
     public Map<String, Object> getFilterValues() {
         return filterFields.stream()
-                .collect(Collectors.toMap(FilterField::key, FilterField::getValue));
+                .filter(field -> field.key() != null)
+                .collect(Collectors.toMap(
+                    FilterField::key,
+                    field -> {
+                        Object value = field.getValue();
+                        return value != null ? value : "";
+                    }
+                ));
     }
     private record FilterField<T>(String key, Supplier<T> valueSupplier) {
         public Object getValue() {
@@ -78,4 +86,3 @@ public class FilterBar extends SplitLayout {
         }
     }
 }
-

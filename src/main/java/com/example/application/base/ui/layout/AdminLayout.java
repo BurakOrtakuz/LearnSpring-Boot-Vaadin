@@ -1,6 +1,7 @@
 package com.example.application.base.ui.layout;
 
-import com.example.application.base.ui.view.AdminView;
+import com.example.application.base.ui.view.Admin.AdminUserManagementView;
+import com.example.application.base.ui.view.Admin.AdminView;
 import com.example.application.base.ui.view.HomeView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
@@ -27,7 +28,7 @@ public class AdminLayout extends AppLayout {
         RouterLink dashboard = new RouterLink("Admin Paneli", AdminView.class);
         dashboard.setClassName("admin-link");
 
-        RouterLink userManagement = new RouterLink("Kullanıcı Yönetimi", AdminView.class);
+        RouterLink userManagement = new RouterLink("Kullanıcı Yönetimi", AdminUserManagementView.class);
         userManagement.setClassName("admin-link");
 
         RouterLink reports = new RouterLink("Raporlar", HomeView.class);
@@ -38,9 +39,8 @@ public class AdminLayout extends AppLayout {
 
         RouterLink logout = new RouterLink("Çıkış yap", HomeView.class);
         logout.setClassName("admin-link");
-        logout.getElement().addEventListener("click", e -> {
-            getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
-        });
+        logout.getElement().addEventListener("click", e ->
+                getUI().ifPresent(ui -> ui.getPage().setLocation("/logout")));
 
         drawerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         drawerLayout.add(logoLink, dashboard, userManagement, reports, settings, logout);

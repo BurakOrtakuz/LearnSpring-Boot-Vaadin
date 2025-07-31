@@ -15,6 +15,10 @@ public class Patient {
     @Column(name = "patient_id")
     private Long patientId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "blood_type")
+    private BloodType bloodType;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "patient_id")

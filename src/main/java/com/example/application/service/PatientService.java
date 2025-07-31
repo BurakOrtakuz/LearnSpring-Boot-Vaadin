@@ -2,6 +2,11 @@ package com.example.application.service;
 
 import com.example.application.domain.Patient;
 import com.example.application.repository.IPatientRepository;
+import com.example.application.specifications.PatientSpecification;
+import com.example.application.specifications.criteria.PatientFilterCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,5 +38,11 @@ public class PatientService implements IPatientService {
     @Override
     public void deleteById(Long id) {
         patientRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Patient> findWithFilters(PatientFilterCriteria criteria, Pageable pageable) {
+        Specification<Patient> spec = PatientSpecification.searchWithCriteria(criteria);
+        return patientRepository.findAll(spec, pageable);
     }
 }

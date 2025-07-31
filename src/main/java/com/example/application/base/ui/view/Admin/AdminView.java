@@ -1,16 +1,13 @@
-package com.example.application.base.ui.view;
+package com.example.application.base.ui.view.Admin;
 
 import com.example.application.base.ui.layout.AdminLayout;
 import com.example.application.auth.TokenNotFoundException;
+import com.example.application.domain.*;
 import com.example.application.service.AdminService;
 import com.example.application.service.DoctorService;
 import com.example.application.service.PatientService;
 import com.example.application.service.RoleService;
-import com.example.application.domain.Person;
-import com.example.application.domain.Doctor;
-import com.example.application.domain.Patient;
-import com.example.application.domain.Admin;
-import com.example.application.domain.Role;
+
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -124,7 +121,7 @@ public class AdminView extends VerticalLayout {
                 person = doctorService.save(new Doctor(null, person, branch)).getPerson();
                 Notification.show("Doktor kaydı başarıyla oluşturuldu!");
             } else if ("Patient".equals(roleName)) {
-                person = patientService.save(new Patient(null, person)).getPerson();
+                person = patientService.save(new Patient(null, BloodType.A_POSITIVE, person)).getPerson();
                 Notification.show("Hasta kaydı başarıyla oluşturuldu!");
             } else if ("Admin".equals(roleName)) {
                 person = adminService.save(new Admin(null, person, rank)).getPerson();

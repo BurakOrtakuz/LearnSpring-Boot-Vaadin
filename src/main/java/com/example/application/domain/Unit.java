@@ -1,5 +1,8 @@
 package com.example.application.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum Unit {
     MG("mg"),
     ML("ml"),
@@ -14,10 +17,6 @@ public enum Unit {
 
     Unit(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     @Override

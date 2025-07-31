@@ -30,6 +30,9 @@ public class Person implements UserDetails
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "tc_no", unique = true, nullable = false)
+    private String tcNo;
+
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
