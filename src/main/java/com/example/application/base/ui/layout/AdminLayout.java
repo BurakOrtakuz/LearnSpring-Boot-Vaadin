@@ -1,5 +1,6 @@
 package com.example.application.base.ui.layout;
 
+import com.example.application.base.ui.view.Admin.AdminReportView;
 import com.example.application.base.ui.view.Admin.AdminUserManagementView;
 import com.example.application.base.ui.view.Admin.AdminView;
 import com.example.application.base.ui.view.HomeView;
@@ -31,7 +32,7 @@ public class AdminLayout extends AppLayout {
         RouterLink userManagement = new RouterLink("Kullanıcı Yönetimi", AdminUserManagementView.class);
         userManagement.setClassName("admin-link");
 
-        RouterLink reports = new RouterLink("Raporlar", HomeView.class);
+        RouterLink reports = new RouterLink("Raporlar", AdminReportView.class);
         reports.setClassName("admin-link");
 
         RouterLink settings = new RouterLink("Sistem Ayarları", HomeView.class);

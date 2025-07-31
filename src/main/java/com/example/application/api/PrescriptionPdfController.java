@@ -63,5 +63,46 @@ public class PrescriptionPdfController {
             return ResponseEntity.status(500).body(("Error generating PDF: " + e.getMessage()).getBytes());
         }
     }
-}
 
+    /**
+     * Database'den rapor kullanarak PDF oluşturur
+     * @param id Prescription ID
+     * @param reportCode Database'deki rapor kodu
+     * @return PDF response
+     */
+    @GetMapping("/pdf/{id}/report/{reportCode}")
+    public ResponseEntity<byte[]> getPrescriptionPdfFromDatabase(@PathVariable Long id, @PathVariable String reportCode) {
+        Optional<Prescription> prescription = prescriptionService.getPrescriptionById(id);
+        if(prescription.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Prescription prescriptionObj = prescription.get();
+        Examination examination = prescriptionObj.getExamination();
+
+        try {
+            // Jasper Prescription DTO oluştur
+            com.example.application.Jaster.Prescription jasperPrescription = new com.example.application.Jaster.Prescription(
+                    examination.getPatient().getPerson().getFirstName() + " " + examination.getPatient().getPerson().getLastName(),
+                    examination.getDate(),
+                    examination.getPatient().getPerson().getUsername(),
+                    examination.getDoctor().getPerson().getFirstName() + " " + examination.getDoctor().getPerson().getLastName(),
+                    prescriptionObj.getDoctorNote()
+            );
+
+            // Medicine listesini al
+            List<PrescriptionMedicine> medicines = prescriptionMedicineService.getMedicinesByPrescriptionId(id);
+
+            // Database'den rapor kullanarak PDF oluştur
+            byte[] pdf = createPdf.generatePrescriptionPdfFromDatabase(reportCode, jasperPrescription, medicines);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=prescription-" + id + "-" + reportCode + ".pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdf);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(("Error generating PDF from database: " + e.getMessage()).getBytes());
+        }
+    }
+}

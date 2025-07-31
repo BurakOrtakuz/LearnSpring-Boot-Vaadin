@@ -29,6 +29,7 @@ public class RegisterDialog extends Dialog {
         TextField firstNameField = new TextField();
         TextField lastNameField = new TextField();
         TextField usernameField = new TextField();
+        TextField identityNumberField = new TextField();
         TextField email = new TextField();
         PasswordField passwordField = new PasswordField();
         PasswordField confirmPasswordField = new PasswordField();
@@ -43,6 +44,7 @@ public class RegisterDialog extends Dialog {
         HorizontalLayout thirdRow = new HorizontalLayout();
         HorizontalLayout fourthRow = new HorizontalLayout();
         HorizontalLayout fifthRow = new HorizontalLayout();
+        HorizontalLayout sixthRow = new HorizontalLayout();
 
         firstRow.setClassName("register-dialog-first-row");
         secondRow.setClassName("register-dialog-second-row");
@@ -75,6 +77,14 @@ public class RegisterDialog extends Dialog {
         usernameField.setErrorMessage("Geçersiz Kullanıcı Adı");
         usernameField.setI18n(new TextField.TextFieldI18n()
                 .setRequiredErrorMessage("Kullanıcı adı zorunludur"));
+
+        identityNumberField.setClassName("register-dialog-username-field");
+        identityNumberField.setLabel("Kullanıcı Adı");
+        identityNumberField.setRequired(true);
+        identityNumberField.setTabIndex(3);
+        identityNumberField.setErrorMessage("Geçersiz Kullanıcı Adı");
+        identityNumberField.setI18n(new TextField.TextFieldI18n()
+                .setRequiredErrorMessage("Tc Kimlik zorunludur"));
 
         email.setClassName("register-dialog-email-field");
         email.setLabel("E-posta");
@@ -184,6 +194,11 @@ public class RegisterDialog extends Dialog {
                 usernameField.setHelperText("Lütfen kullanıcı adınızı girin.");
                 check = true;
             }
+            if(identityNumberField.isEmpty())
+            {
+                identityNumberField.setHelperText("Lütfen kimlik numaranızı girin.");
+                check = true;
+            }
             if(email.isEmpty())
             {
                 email.setHelperText("Lütfen e-posta adresinizi girin.");
@@ -230,6 +245,7 @@ public class RegisterDialog extends Dialog {
                     firstNameField.getValue(),
                     lastNameField.getValue(),
                     usernameField.getValue(),
+                    identityNumberField.getValue(),
                     email.getValue(),
                     passwordField.getValue(),
                     birthDay.getValue().toString(),
@@ -241,6 +257,7 @@ public class RegisterDialog extends Dialog {
                 firstNameField.clear();
                 lastNameField.clear();
                 usernameField.clear();
+                identityNumberField.clear();
                 email.clear();
                 passwordField.clear();
                 confirmPasswordField.clear();
@@ -254,16 +271,18 @@ public class RegisterDialog extends Dialog {
 
         firstRow.add(firstNameField, lastNameField);
         secondRow.add(usernameField, email);
-        thirdRow.add(passwordField, confirmPasswordField);
-        fourthRow.add(birthDay, genderGroup);
-        fifthRow.add(phoneField, addressField);
+        thirdRow.add(identityNumberField, phoneField);
+        fourthRow.add(passwordField, confirmPasswordField);
+        fifthRow.add(birthDay, genderGroup);
+        sixthRow.add(addressField);
 
         dialogContent.add(
                 firstRow,
                 secondRow,
                 thirdRow,
                 fourthRow,
-                fifthRow
+                fifthRow,
+                sixthRow
         );
         this.getHeader().add(dialogTitle);
         this.getFooter().add(
@@ -276,6 +295,7 @@ public class RegisterDialog extends Dialog {
     private boolean onRegister(String firstName,
                                String lastName,
                                String username,
+                               String identityNumber,
                                String email,
                                String password,
                                String birthDate,
@@ -288,6 +308,7 @@ public class RegisterDialog extends Dialog {
             RegisterRequest registerRequest = new RegisterRequest(firstName,
                     lastName,
                     username,
+                    identityNumber,
                     email,
                     password,
                     birthDate,

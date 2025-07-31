@@ -38,6 +38,7 @@ public class AuthenticationService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .username(request.getUsername())
+                .tcNo(request.getIdentificationNumber())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .birthDate(LocalDate.parse(request.getBirthDate()))
