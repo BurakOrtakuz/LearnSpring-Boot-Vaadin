@@ -2,7 +2,9 @@ package com.example.application.base.ui.view.Admin;
 
 import com.example.application.base.ui.layout.AdminLayout;
 import com.example.application.domain.Report;
+import com.example.application.domain.ReportUsage;
 import com.example.application.service.IReportService;
+import com.example.application.service.IReportUsageService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -32,6 +34,7 @@ import java.util.List;
 public class AdminReportView extends VerticalLayout {
 
     private final IReportService reportService;
+    private final IReportUsageService reportUsageService;
     private final Grid<Report> reportGrid = new Grid<>(Report.class, false);
 
     // Upload dialog components
@@ -43,14 +46,35 @@ public class AdminReportView extends VerticalLayout {
     private TextArea reportDescriptionField;
     private Button confirmUploadButton;
 
-    public AdminReportView(IReportService reportService) {
+    // Update dialog components
+    private Dialog updateDialog;
+    private MemoryBuffer updateBuffer;
+    private Upload updateUpload;
+    private ComboBox<String> updateMainReportSelector;
+    private TextField updateReportNameField;
+    private TextArea updateReportDescriptionField;
+    private Button confirmUpdateButton;
+    private Button updateWithoutZipButton;
+    private Report currentUpdatingReport;
+
+    public AdminReportView(IReportService reportService, IReportUsageService reportUsageService) {
         this.reportService = reportService;
+        this.reportUsageService = reportUsageService;
         this.buffer = new MemoryBuffer();
         this.upload = new Upload(buffer);
         this.mainReportSelector = new ComboBox<>("Ana Rapor Seçin");
         this.reportNameField = new TextField("Rapor Adı");
         this.reportDescriptionField = new TextArea("Açıklama");
         this.confirmUploadButton = new Button("Yükle");
+
+        // Update dialog components initialization
+        this.updateBuffer = new MemoryBuffer();
+        this.updateUpload = new Upload(updateBuffer);
+        this.updateMainReportSelector = new ComboBox<>("Ana Rapor Seçin");
+        this.updateReportNameField = new TextField("Rapor Adı");
+        this.updateReportDescriptionField = new TextArea("Açıklama");
+        this.confirmUpdateButton = new Button("Güncelle");
+        this.updateWithoutZipButton = new Button("Zip Olmadan Güncelle");
 
         initializeComponents();
         setupLayout();
@@ -63,6 +87,9 @@ public class AdminReportView extends VerticalLayout {
 
         // Upload dialog setup
         setupUploadDialog();
+
+        // Update dialog setup
+        setupUpdateDialog();
     }
 
     private void setupReportGrid() {
@@ -73,12 +100,18 @@ public class AdminReportView extends VerticalLayout {
                 .setHeader("Yükleme Tarihi");
 
         reportGrid.addComponentColumn(report -> {
+            HorizontalLayout horizontalLayout = new HorizontalLayout();
+
             Button deleteButton = new Button("Sil");
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.addClickListener(e -> deleteReport(report));
-            return deleteButton;
-        }).setHeader("İşlemler");
 
+            Button updateButton = new Button("Güncelle");
+            updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            updateButton.addClickListener(e -> openUpdateDialog(report));
+            horizontalLayout.add(deleteButton, updateButton);
+            return horizontalLayout;
+        }).setHeader("İşlemler");
         reportGrid.setSizeFull();
     }
 
@@ -155,6 +188,83 @@ public class AdminReportView extends VerticalLayout {
         uploadDialog.getFooter().add(buttonLayout);
     }
 
+    private void setupUpdateDialog() {
+        updateDialog = new Dialog();
+        updateDialog.setHeaderTitle("Rapor Güncelle");
+        updateDialog.setWidth("500px");
+
+        // Update component setup
+        updateUpload.setAcceptedFileTypes(".zip");
+        updateUpload.setMaxFileSize(10 * 1024 * 1024); // 10MB
+        updateUpload.addSucceededListener(event -> {
+            try {
+                List<String> jasperFiles = reportService.getJasperFilesFromZip(
+                    new SpringMultipartFile(updateBuffer.getFileName(), updateBuffer.getInputStream())
+                );
+
+                if (jasperFiles.isEmpty()) {
+                    Notification.show("Zip dosyasında .jasper dosyası bulunamadı!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    return;
+                }
+
+                updateMainReportSelector.setItems(jasperFiles);
+                updateMainReportSelector.setVisible(true);
+                confirmUpdateButton.setEnabled(false);
+
+                Notification.show("Dosya başarıyla yüklendi. Ana raporu seçin.", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+            } catch (Exception e) {
+                Notification.show("Dosya işlenirken hata: " + e.getMessage(), 5000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        });
+
+        // Main report selector setup
+        updateMainReportSelector.setVisible(false);
+        updateMainReportSelector.addValueChangeListener(event -> {
+            confirmUpdateButton.setEnabled(event.getValue() != null &&
+                !updateReportNameField.getValue().trim().isEmpty());
+        });
+
+        // Report name field setup
+        updateReportNameField.setRequired(true);
+        updateReportNameField.addValueChangeListener(event -> {
+            confirmUpdateButton.setEnabled(updateMainReportSelector.getValue() != null &&
+                !event.getValue().trim().isEmpty());
+        });
+
+        // Description field setup
+        updateReportDescriptionField.setHeight("100px");
+
+        // Confirm button setup
+        confirmUpdateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        confirmUpdateButton.setEnabled(false);
+        confirmUpdateButton.addClickListener(event -> performUpdate());
+
+        // Update without zip button
+        updateWithoutZipButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        updateWithoutZipButton.addClickListener(event -> performUpdateWithoutZip());
+
+        // Cancel button
+        Button cancelButton = new Button("İptal", event -> closeUpdateDialog());
+
+        // Dialog layout
+        VerticalLayout dialogContent = new VerticalLayout(
+            new Paragraph("Güncellenmiş jasper raporlarını içeren zip dosyasını seçin veya sadece rapor adını değiştirin:"),
+            updateUpload,
+            updateMainReportSelector,
+            updateReportNameField,
+            updateReportDescriptionField
+        );
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(confirmUpdateButton, updateWithoutZipButton, cancelButton);
+
+        updateDialog.add(dialogContent);
+        updateDialog.getFooter().add(buttonLayout);
+    }
+
     private void setupLayout() {
         H2 title = new H2("Rapor Yönetimi");
 
@@ -210,6 +320,107 @@ public class AdminReportView extends VerticalLayout {
 
         } catch (Exception e) {
             Notification.show("Rapor yüklenirken hata: " + e.getMessage(),
+                5000, Notification.Position.MIDDLE)
+                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
+
+    private void openUpdateDialog(Report report) {
+        currentUpdatingReport = report;
+
+        // Reset dialog state
+        updateBuffer = new MemoryBuffer();
+        updateUpload.setReceiver(updateBuffer);
+        updateMainReportSelector.clear();
+        updateMainReportSelector.setVisible(false);
+        updateReportNameField.clear();
+        updateReportDescriptionField.clear();
+        confirmUpdateButton.setEnabled(false);
+
+        // Set current report data
+        updateReportNameField.setValue(report.getName());
+        updateReportDescriptionField.setValue(report.getDescription());
+
+        updateDialog.open();
+    }
+
+    private void closeUpdateDialog() {
+        updateDialog.close();
+    }
+
+    private void performUpdate() {
+        try {
+            String selectedMainReport = updateMainReportSelector.getValue();
+            String reportName = updateReportNameField.getValue().trim();
+            String reportDescription = updateReportDescriptionField.getValue().trim();
+
+            // Validasyon kontrolü
+            if (selectedMainReport == null || selectedMainReport.trim().isEmpty()) {
+                updateMainReportSelector.setHelperText("Ana rapor seçilmelidir!");
+                return;
+            }
+
+            if (reportName.isEmpty()) {
+                updateReportNameField.setHelperText("Rapor adı boş olamaz!");
+                return;
+            }
+
+            if (currentUpdatingReport == null) {
+                Notification.show("Güncellenecek rapor bulunamadı!", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+
+            MultipartFile zipFile = new SpringMultipartFile(updateBuffer.getFileName(), updateBuffer.getInputStream());
+
+            Report updatedReport = reportService.updateReportWithZip(
+                currentUpdatingReport.getReportId(), zipFile, selectedMainReport, reportName, reportDescription
+            );
+
+            Notification.show("Rapor başarıyla güncellendi! Kod: " + updatedReport.getReportCode(),
+                5000, Notification.Position.BOTTOM_START)
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+            refreshReportGrid();
+            closeUpdateDialog();
+
+        } catch (Exception e) {
+            String errorMessage = "Rapor güncellenirken hata: ";
+            if (e.getMessage() != null && !e.getMessage().trim().isEmpty()) {
+                errorMessage += e.getMessage();
+            } else {
+                errorMessage += "Bilinmeyen hata (" + e.getClass().getSimpleName() + ")";
+            }
+
+            Notification.show(errorMessage, 5000, Notification.Position.MIDDLE)
+                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
+
+    private void performUpdateWithoutZip() {
+        try {
+            String reportName = updateReportNameField.getValue().trim();
+            String reportDescription = updateReportDescriptionField.getValue().trim();
+
+            if (reportName.isEmpty()) {
+                Notification.show("Rapor adı boş olamaz!", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+
+            Report updatedReport = reportService.updateReport(
+                currentUpdatingReport.getReportId(), reportName, reportDescription
+            );
+
+            Notification.show("Rapor başarıyla güncellendi! Kod: " + updatedReport.getReportCode(),
+                5000, Notification.Position.MIDDLE)
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+            refreshReportGrid();
+            closeUpdateDialog();
+
+        } catch (Exception e) {
+            Notification.show("Rapor güncellenirken hata: " + e.getMessage(),
                 5000, Notification.Position.MIDDLE)
                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }

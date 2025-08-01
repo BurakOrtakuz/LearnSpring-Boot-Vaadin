@@ -131,4 +131,65 @@ public class ReportService implements IReportService {
 
         return code;
     }
+
+    @Override
+    public Report updateReport(Long reportId, String name, String description) throws Exception {
+        Optional<Report> reportOpt = reportRepository.findById(reportId);
+        if (reportOpt.isEmpty()) {
+            throw new IllegalArgumentException("Rapor bulunamadı");
+        }
+
+        Report report = reportOpt.get();
+        report.setName(name);
+        report.setDescription(description);
+
+        return reportRepository.save(report);
+    }
+
+    @Override
+    public Report updateReportWithZip(Long reportId, MultipartFile zipFile, String selectedMainReport, String name, String description) throws Exception {
+        Optional<Report> reportOpt = reportRepository.findById(reportId);
+        if (reportOpt.isEmpty()) {
+            throw new IllegalArgumentException("Rapor bulunamadı");
+        }
+
+        if (zipFile == null) {
+            throw new IllegalArgumentException("Zip dosyası null olamaz");
+        }
+
+        if (zipFile.isEmpty()) {
+            throw new IllegalArgumentException("Zip dosyası boş olamaz");
+        }
+
+        // Zip dosyasından jasper dosyalarını çıkar
+        Map<String, byte[]> jasperFiles = extractJasperFilesFromZip(zipFile);
+
+        if (jasperFiles.isEmpty()) {
+            throw new IllegalArgumentException("Zip dosyasında .jasper dosyası bulunamadı");
+        }
+
+        if (!jasperFiles.containsKey(selectedMainReport)) {
+            throw new IllegalArgumentException("Seçilen ana rapor dosyası bulunamadı: " + selectedMainReport);
+        }
+
+        // Ana rapor ve subreport'u ayır
+        byte[] mainReportData = jasperFiles.get(selectedMainReport);
+        byte[] subreportData = null;
+
+        // Ana rapor dışındaki ilk jasper dosyasını subreport olarak kabul et
+        for (Map.Entry<String, byte[]> entry : jasperFiles.entrySet()) {
+            if (!entry.getKey().equals(selectedMainReport)) {
+                subreportData = entry.getValue();
+                break;
+            }
+        }
+
+        Report report = reportOpt.get();
+        report.setName(name);
+        report.setDescription(description);
+        report.setMainReportData(mainReportData);
+        report.setSubreportData(subreportData);
+
+        return reportRepository.save(report);
+    }
 }

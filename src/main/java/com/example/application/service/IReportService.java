@@ -13,4 +13,6 @@ public interface IReportService {
     Optional<Report> getReportByCode(String reportCode);
     void deleteReport(Long id);
     String generateUniqueReportCode();
+    Report updateReport(Long reportId, String name, String description) throws Exception;
+    Report updateReportWithZip(Long reportId, MultipartFile zipFile, String selectedMainReport, String name, String description) throws Exception;
 }

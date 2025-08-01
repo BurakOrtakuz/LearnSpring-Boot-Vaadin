@@ -1,9 +1,11 @@
 package com.example.application.base.ui.layout;
 
+import com.example.application.base.ui.view.Admin.AdminReportUsageView;
 import com.example.application.base.ui.view.Admin.AdminReportView;
 import com.example.application.base.ui.view.Admin.AdminUserManagementView;
 import com.example.application.base.ui.view.Admin.AdminView;
 import com.example.application.base.ui.view.HomeView;
+import com.example.application.domain.ReportUsage;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -35,7 +37,7 @@ public class AdminLayout extends AppLayout {
         RouterLink reports = new RouterLink("Raporlar", AdminReportView.class);
         reports.setClassName("admin-link");
 
-        RouterLink settings = new RouterLink("Sistem Ayarları", HomeView.class);
+        RouterLink settings = new RouterLink("Rapor Kullanımları", AdminReportUsageView.class);
         settings.setClassName("admin-link");
 
         RouterLink logout = new RouterLink("Çıkış yap", HomeView.class);
