@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Route(value = "admin/reports", layout = AdminLayout.class)
-@PageTitle("Rapor Yönetimi")
 @RolesAllowed("ADMIN")
 public class AdminReportView extends VerticalLayout {
 
@@ -37,15 +36,22 @@ public class AdminReportView extends VerticalLayout {
 
     // Upload dialog components
     private Dialog uploadDialog;
-    private MemoryBuffer buffer = new MemoryBuffer();
-    private Upload upload = new Upload(buffer);
-    private ComboBox<String> mainReportSelector = new ComboBox<>("Ana Rapor Seçin");
-    private TextField reportNameField = new TextField("Rapor Adı");
-    private TextArea reportDescriptionField = new TextArea("Açıklama");
-    private Button confirmUploadButton = new Button("Yükle");
+    private MemoryBuffer buffer;
+    private Upload upload;
+    private ComboBox<String> mainReportSelector;
+    private TextField reportNameField;
+    private TextArea reportDescriptionField;
+    private Button confirmUploadButton;
 
     public AdminReportView(IReportService reportService) {
         this.reportService = reportService;
+        this.buffer = new MemoryBuffer();
+        this.upload = new Upload(buffer);
+        this.mainReportSelector = new ComboBox<>("Ana Rapor Seçin");
+        this.reportNameField = new TextField("Rapor Adı");
+        this.reportDescriptionField = new TextArea("Açıklama");
+        this.confirmUploadButton = new Button("Yükle");
+
         initializeComponents();
         setupLayout();
         refreshReportGrid();

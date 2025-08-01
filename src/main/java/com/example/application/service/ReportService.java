@@ -116,24 +116,10 @@ public class ReportService implements IReportService {
     public Optional<Report> getReportByCode(String reportCode) {
         return reportRepository.findByReportCode(reportCode);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Report> getReportById(Long id) {
-        return reportRepository.findById(id);
-    }
-
     @Override
     public void deleteReport(Long id) {
         reportRepository.deleteById(id);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Object[]> getReportCodesAndNames() {
-        return reportRepository.findReportCodesAndNames();
-    }
-
     @Override
     public String generateUniqueReportCode() {
         String code;
